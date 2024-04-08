@@ -1,38 +1,102 @@
-.App {
-  text-align: center;
+* {
+  margin: 0;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+body {
+  background-color: #f5f6fa;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.app > section,
+.app > footer {
+  padding: 20px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.app__hero {
+  flex: 0.9;
+}
+
+#app__mapContainer {
+  background-color: #67b0ca;
+}
+
+h2 > span {
+  color: #ed0000 !important;
+}
+
+/* .app__header {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  margin-bottom: 20px;
+  justify-content: space-between;
+} */
+
+.app__cityList {
+  margin-top: 20px;
+  /* height: 600px; */
+  /* display: flex; */
+  /* justify-content: space-between; */
 }
 
-.App-link {
-  color: #61dafb;
+.circle-zoom {
+  margin: 24px;
+  width: 50px;
+  height: 50px;
+  border: 1px solid green;
+  background: #f50057;
+  animation: zoom-animation 1s infinite;
 }
 
-@keyframes App-logo-spin {
+.circle-container {
+  width: 600px;
+  height: 400px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.pulsing-circle {
+  /* border-radius: 50%; */
+  /* width: 150px;
+  height: 150px; */
+  /* position: absolute; */
+  /* opacity: 0; */
+
+  animation: scaleIn 2s infinite cubic-bezier(0.36, 0.11, 0.89, 0.32);
+  /* animation: scaleIn 4s linear infinite; */
+}
+
+@keyframes scaleIn {
   from {
-    transform: rotate(0deg);
+    opacity: 0.5;
   }
   to {
-    transform: rotate(360deg);
+    opacity: 0.1;
+  }
+}
+
+.item {
+  z-index: 100;
+  padding: 5px;
+}
+.item img {
+  width: 150px;
+}
+
+@media (max-width: 990px) {
+  .app {
+    flex-direction: column;
+  }
+}
+
+@keyframes zoom-animation {
+  0% {
+    transform: scale(1, 1);
+  }
+  50% {
+    transform: scale(1.5, 1.5);
+  }
+  100% {
+    transform: scale(1, 1);
   }
 }

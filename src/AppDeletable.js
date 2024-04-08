@@ -88,15 +88,31 @@ function App() {
   //   getCountriesData()
   // }, [])
 
-  const onCityChange = async (e) => {
-    const cityName = e.target.value
-    console.log('cityName', cityName)
-  }
+  // const onCountryChange = async (e) => {
+  //   const countryCode = e.target.value
+
+  //   // const endpoint = (countryCode === 'worldwide') ? 'all' : countryCode;
+  //   // const url = `https://disease.sh/v3/covid-19/countries/${endpoint}`
+
+  //   const url =
+  //     countryCode === 'worldwide'
+  //       ? 'https://disease.sh/v3/covid-19/all'
+  //       : `https://disease.sh/v3/covid-19/countries/${countryCode}`
+
+  //   await fetch(url)
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       setInputCountry(countryCode)
+  //       // setCountryInfo(data)
+  //       setMapCenter([data.countryInfo.lat, data.countryInfo.long])
+  //       setMapZoom(4)
+  //     })
+  // }
 
   // https://disease.sh/v3/covid-19/countries/
   return (
     <div className='app'>
-      <section className='app__hero'>
+      <div className='app__hero'>
         <h2 style={{ paddingBottom: '10px' }}>
           ACOMPAÑANOS A CORRER A PUERTO RICO COMPLETO EN <span>90 DÍAS</span>
         </h2>
@@ -109,36 +125,55 @@ function App() {
           <strong style={{ color: '#0050ef' }}>estiramiento</strong> y{' '}
           <strong style={{ color: '#0050ef' }}>movilidad</strong>.
         </p>
-      </section>
-      <section className='app__cities'>
-        <FormControl>
-          <Select
-            variant='outlined'
-            onChange={onCityChange}
-            value={prCities[0]?.lat}
-          >
-            {prCities.map((city) => {
-              return city.visited <= 0 ? null : (
-                <MenuItem value={city}>{city.name}</MenuItem>
-              )
-            })}
-          </Select>
-        </FormControl>
+        {/* <p>Acompañanos!</p> */}
+        {/* <div className='app__header'>
+          <FormControl className='app__dropdown'>
+            <Select
+              variant='outlined'
+              // onChange={onCountryChange}
+              // value={country}
+              value={'PR'}
+            >
+              <MenuItem value='worldwide'>PR</MenuItem>
+              {countries.map((country) => (
+                <MenuItem value={country.value}>{country.name}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </div> */}
+
+        {/* <div className='app__stats'>
+          <InfoBox
+            title='Coronavirus Cases'
+            cases={countryInfo.todayCases}
+            total={countryInfo.cases}
+          />
+          <InfoBox
+            title='Recovered'
+            cases={countryInfo.todayRecovered}
+            total={countryInfo.recovered}
+          />
+          <InfoBox
+            title='Deaths'
+            cases={countryInfo.todayDeaths}
+            total={countryInfo.deaths}
+          />
+        </div> */}
+      </div>
+      <section id='app__mapContainer'>
+        <PRMap prCities={prCities} center={mapCenter} zoom={mapZoom} />
       </section>
       {prCities.length > 0 && (
-        <section id='app__mapContainer'>
-          <PRMap prCities={prCities} center={mapCenter} zoom={mapZoom} />
-          <Card className='app__cityList'>
-            <CardContent>
-              <h3>
-                Ya corrimos en{' '}
-                <span style={{ color: '#0050ef' }}>{nCitiesVisited}</span>{' '}
-                ciudades
-              </h3>
-              <Table cities={prCities} />
-            </CardContent>
-          </Card>
-        </section>
+        <Card className='app__cities'>
+          <CardContent>
+            <h3>
+              Ya corrimos en{' '}
+              <span style={{ color: '#0050ef' }}>{nCitiesVisited}</span>{' '}
+              ciudades
+            </h3>
+            <Table cities={prCities} />
+          </CardContent>
+        </Card>
       )}
     </div>
   )
