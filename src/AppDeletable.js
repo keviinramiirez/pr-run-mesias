@@ -9,7 +9,7 @@ import {
   FormControl,
   CardContent,
 } from '@material-ui/core'
-import PRMap from './PRMap'
+import PRMap from './components/PRMap'
 import Table from './Table'
 import { auth, db } from './Firebase'
 import { collection, query, where, getDocs } from 'firebase/firestore'

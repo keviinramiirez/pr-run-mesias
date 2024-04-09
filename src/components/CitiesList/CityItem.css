@@ -1,0 +1,13 @@
+.cityItem {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  /* width: 100%; */
+  padding: 20px;
+  height: 40px;
+  touch-action: none;
+  justify-content: space-around;
+}

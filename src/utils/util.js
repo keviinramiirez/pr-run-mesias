@@ -1,10 +1,11 @@
 import React from 'react'
 import numeral from 'numeral'
 import { Circle, Popup } from 'react-leaflet'
+import './utils.css'
 
-export const sortData = (data) => {
+export const sortCitiesByName = (data) => {
   const sortedData = [...data]
-  sortedData.sort((a, b) => (a.cases > b.cases ? -1 : 1))
+  sortedData.sort((a, b) => (a.name > b.name ? 1 : -1))
   return sortedData
 }
 
@@ -29,8 +30,8 @@ const casesTypeColors = {
   },
 }
 
-export const showDataOnMap = (prCities) =>
-  prCities.map((city) => {
+export const showDataOnMap = (cities) =>
+  cities.map((city) => {
     // console.log('city:', )
     let radius = String(city.name).includes('edell') ? 50000 : 2000
     let hexColor = casesTypeColors['notvisited'].hex
@@ -44,7 +45,7 @@ export const showDataOnMap = (prCities) =>
     // if (city.visited >= 0) return null
 
     return (
-      <div className='circle-container'>
+      <div>
         <Circle
           center={[city.lat, city.long]}
           color={hexColor}
@@ -53,14 +54,25 @@ export const showDataOnMap = (prCities) =>
           radius={radius}
           // className={`${city.visited < 0 ? 'circle-zoom' : ''}`}
         >
-          {/* 
-            <Popup>
-              <div className='info-container'>
-                <div className='info-name'>{city.name}</div>
-                <div className='info-confirmed'>Label Here</div>
+          <Popup>
+            <div className='util__cityInfoContainer'>
+              <div className='util__cityInfoName'>{city.name}</div>
+              <div className='util__circleContainer'>
+                <div
+                  className={`util__circleWithBorder ${
+                    city.visited > 0 ? 'util__Green' : 'util__Grey'
+                  }`}
+                ></div>
+                <div className='util__infoVisited'>
+                  {city.visited > 0 ? (
+                    <div>Ya lo corrimos</div>
+                  ) : (
+                    <div>Aún sin visitar</div>
+                  )}
+                </div>
               </div>
-            </Popup> 
-          */}
+            </div>
+          </Popup>
         </Circle>
         {city.visited < 0 && (
           <Circle
@@ -81,7 +93,7 @@ export const showDataOnMap = (prCities) =>
 //           <div className='info-flag'
 //               style={{ backgroundImage: `url(${country.countryInfo.flag})` }}>
 //             </div>
-//           <div className='info-name'>{city.name}</div>
+//           <div className='util__infoName'>{city.name}</div>
 //           <div className='info-confirmed'>Label Here</div>
 //           <div className='info-deaths'>
 //             Deaths: {numeral(country.deaths).format('0,0')}
