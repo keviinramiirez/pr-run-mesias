@@ -60,14 +60,20 @@ export const showDataOnMap = (cities) =>
               <div className='util__circleContainer'>
                 <div
                   className={`util__circleWithBorder ${
-                    city.visited > 0 ? 'util__Green' : 'util__Grey'
+                    city.visited === 0
+                      ? 'util__Grey'
+                      : city.visited === 1
+                      ? 'util__Green'
+                      : 'util__Blue'
                   }`}
                 ></div>
                 <div className='util__infoVisited'>
-                  {city.visited > 0 ? (
+                  {city.visited === 0 ? (
+                    <div>Ya lo corrimos</div>
+                  ) : city.visited === 1 ? (
                     <div>Ya lo corrimos</div>
                   ) : (
-                    <div>Aún sin visitar</div>
+                    <div>Próxima corrida</div>
                   )}
                 </div>
               </div>

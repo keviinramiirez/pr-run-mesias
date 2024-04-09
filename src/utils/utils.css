@@ -20,6 +20,11 @@
   background: #00d06144;
 }
 
+.util__Blue {
+  border: solid #0050ef 3px;
+  background: #0050ef44;
+}
+
 .util__circleWithBorder > span {
   padding-left: 20px;
 }
