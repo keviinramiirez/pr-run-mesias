@@ -4,10 +4,17 @@
 
 body {
   background-color: #f5f6fa;
+  color: #282828;
+}
+
+#header {
+  height: 20px;
+  /* text-align: center; */
 }
 
 .app > section,
-.app > footer {
+.app > footer,
+.app > #header {
   padding: 20px;
 }
 
@@ -35,6 +42,10 @@ body {
   margin-left: 10px;
 }
 
+.MuiPaper-root.MuiCard-root {
+  overflow: hidden !important;
+}
+
 .app__addButtonDisabled {
   opacity: 0.5;
   cursor: default !important;
@@ -52,7 +63,8 @@ body {
 }
 
 #app__mapContainer {
-  background-color: #67b0ca;
+  /* background-color: rgb(163, 214, 229); */
+  background-color: rgb(163, 214, 229);
 }
 
 h2 > span {
@@ -66,14 +78,13 @@ h2 > span {
   justify-content: space-between;
 } */
 
-.app__cityList {
-  margin-top: 20px;
-  /* height: 600px; */
-  /* display: flex; */
-  /* justify-content: space-between; */
+.app__cityListCard {
+  /* margin-top: 20px; */
+  overflow: hidden !important;
 }
 
 .app__citiesList {
+  margin-bottom: 20px;
 }
 
 .circle-zoom {

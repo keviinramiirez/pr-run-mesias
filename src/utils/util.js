@@ -1,5 +1,4 @@
 import React from 'react'
-import numeral from 'numeral'
 import { Circle, Popup } from 'react-leaflet'
 import './utils.css'
 
@@ -9,20 +8,23 @@ export const sortCitiesByName = (data) => {
   return sortedData
 }
 
-const casesTypeColors = {
+export const citiesVisitValues = {
   notvisited: {
+    visitedValue: 0,
     hex: '#808080',
     rgb: 'rgb(204, 16, 52)',
     half_op: 'rgba(204, 16, 52, 0.5)',
     radius: 2000,
   },
   visited: {
+    visitedValue: 1,
     hex: '#00d061',
     rgb: 'rgb(125, 215, 29)',
     half_op: 'rgba(125, 215, 29, 0.5)',
     radius: 2000,
   },
   tovisit: {
+    visitedValue: 2,
     hex: '#0050ef',
     rgb: 'rgb(251, 68, 67)',
     half_op: 'rgba(251, 68, 67, 0.5)',
@@ -34,12 +36,13 @@ export const showDataOnMap = (cities) =>
   cities.map((city) => {
     // console.log('city:', )
     let radius = String(city.name).includes('edell') ? 50000 : 2000
-    let hexColor = casesTypeColors['notvisited'].hex
+    let hexColor = citiesVisitValues['notvisited'].hex
 
-    if (city.visited > 0) hexColor = casesTypeColors['visited'].hex
-    else if (city.visited < 0) {
-      hexColor = casesTypeColors['tovisit'].hex
-      radius = casesTypeColors['tovisit'].radius
+    if (city.visited === 1) hexColor = citiesVisitValues['visited'].hex
+    else if (city.visited > 1) {
+      console.log('blue city is', city.name)
+      hexColor = citiesVisitValues['tovisit'].hex
+      radius = citiesVisitValues['tovisit'].radius
     }
 
     // if (city.visited >= 0) return null
@@ -80,14 +83,14 @@ export const showDataOnMap = (cities) =>
             </div>
           </Popup>
         </Circle>
-        {city.visited < 0 && (
+        {city.visited > 1 && (
           <Circle
             center={[city.lat, city.long]}
             color={hexColor}
             fillColor={hexColor}
             fillOpacity={0.4}
             radius={radius + 4000}
-            className={`${city.visited < 0 ? 'pulsing-circle' : ''}`}
+            className={`${city.visited > 1 ? 'pulsing-circle' : ''}`}
           ></Circle>
         )}
       </div>

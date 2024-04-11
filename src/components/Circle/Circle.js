@@ -1,7 +1,8 @@
 import './Circle.css'
 
-const Circle = ({ visited, isHidden = false }) => {
+const Circle = ({ visited, isHidden = false, cityName = '' }) => {
   let color = 'grey'
+  // console.log('visited', visited)
   if (visited === 1) color = 'green'
   else if (visited > 1) color = 'blue'
   // ${visited > 1 ? 'pulsingAnimation' : ''}

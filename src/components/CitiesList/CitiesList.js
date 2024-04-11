@@ -9,16 +9,25 @@ import {
   CardContent,
 } from '@material-ui/core'
 import CityItem from './CityItem'
+import '../../App.css'
 
-const CitiesList = ({ cities, onCityChange, onDeleteVisited }) => {
+const CitiesList = ({ cities, onCityChange, visitedAmount }) => {
   // 0 = unvisitedGrey, 1 = visitedGreen, 2 = toVisitBlue
+  console.log()
 
   return (
     <>
-      <Card>
-        <CardContent>
+      <Card className='app__cityListCard citiesList__modifiableList'>
+        {/* <h3 style={{ position: 'fixed' }}>
+          Ya corrimos en{' '}
+          <span style={{ color: '#0050ef' }}>{visitedAmount}</span> ciudades
+        </h3> */}
+        <CardContent
+          className='citiesList__cardContent'
+          style={{ overflow: 'hidden !important' }}
+        >
           <div
-            className='citiesList'
+            className='citiesList__items'
             // style={{
             //   height: '400px',
             //   overflow: 'scroll',

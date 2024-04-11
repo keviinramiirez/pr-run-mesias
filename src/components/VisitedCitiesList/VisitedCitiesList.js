@@ -8,11 +8,7 @@ export const VisitedCitiesList = ({ cities, onDeleteVisited }) => {
     <div className='VisitedCitiesList'>
       {/* <SortableContext items={cities} strategy={verticalListSortingStrategy}> */}
       {cities.map((city) => (
-        <VisitedCity
-          key={city.id}
-          city={city}
-          onDeleteVisited={onDeleteVisited}
-        />
+        <VisitedCity key={city.id} city={city} />
       ))}
       {/* </SortableContext> */}
     </div>

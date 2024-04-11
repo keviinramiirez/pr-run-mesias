@@ -3,7 +3,9 @@ import './App.css'
 // import { DndContext, closestCorners } from '@dnd-kit/core'
 // import { arrayMove } from '@dnd-kit/sortable'
 import 'leaflet/dist/leaflet.css'
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { useRef, useEffect, useState } from 'react'
+import { FaInstagram } from 'react-icons/fa'
+import AuthProvider from './store/AuthProvider'
 import {
   Card,
   MenuItem,
@@ -11,26 +13,41 @@ import {
   InputLabel,
   FormControl,
   CardContent,
+  Button,
 } from '@material-ui/core'
-import PRMap from './components/PRMap'
+import PRMap from './components/Map/PRMap'
 import Table from './Table'
 import { auth, db } from './Firebase'
-import { collection, query, where, getDocs } from 'firebase/firestore'
-import { VisitedCitiesList } from './components/VisitedCitiesList/VisitedCitiesList'
-import { sortCitiesByName } from './utils/util'
-import Circle from './components/Circle/Circle'
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  getDoc,
+  setDoc,
+  doc,
+} from 'firebase/firestore'
+// import { sortCitiesByName } from './utils/util'
+// import Circle from './components/Circle/Circle'
 import CitiesList from './components/CitiesList/CitiesList'
+import Header from './components/Header/Header'
+import LoginCard from './components/Header/LoginCard'
+import { citiesVisitValues } from './utils/util'
 
 function App() {
   const [cities, setCities] = useState([])
   const [visitedCities, setVisitedCities] = useState([])
-  const [unvisitedCities, setUnvisitedCities] = useState([])
-  const [selectedCity, setSelectedCity] = useState(undefined)
-  const [mapZoom, _] = useState(9)
-  const [mapCenter, __] = useState({
-    lat: 18.200178,
-    lng: -66.664513,
-  })
+  const [visitedCitiesSet, setVisitedCitiesSet] = useState(new Set())
+  const [loginCardDimensions, setLoginCardDimensions] = useState({})
+  const [loggedIn, setLoggedIn] = useState(false)
+
+  // const [mapZoom, _] = useState(8)
+  // const [mapCenter, __] = useState({
+  //   lat: 18.200178,
+  //   lng: -66.464513,
+  // })
+
+  const iconEl = useRef(null)
 
   useEffect(() => {
     // auth.onAuthStateChanged(authUser => {
@@ -38,6 +55,7 @@ function App() {
     //   if (authUser) {
     //   }
     // })
+    const visitedSet = new Set()
     const getCities = async () => {
       // console.log('db', db)
       const q = query(collection(db, 'cities'))
@@ -45,119 +63,146 @@ function App() {
       let id = 1
       const fetchedCities = []
       const visitedCities = []
-      const unvisitedCities = []
       // console.log('querySnapshot', querySnapshot)
       querySnapshot.forEach((doc) => {
         const cityData = doc.data()
         cityData.id = id++
         fetchedCities.push(cityData)
-        if (cityData.visited > 0) {
+        if (cityData.visited === citiesVisitValues.visited.visitedValue) {
           visitedCities.push(cityData)
-        }
-        if (cityData.visited === 0) {
-          unvisitedCities.push(cityData)
-          console.log('unvisitedCities')
+          visitedSet.add(cityData.name)
         }
       })
       setCities(fetchedCities)
       setVisitedCities(visitedCities)
-      setUnvisitedCities(unvisitedCities)
+      setVisitedCitiesSet(visitedSet)
+      console.log('visitedSet.size', visitedSet.size)
+      console.log('visitedCities.lengtn', visitedCities.length)
     }
 
     getCities()
-
-    // db.collection('cities').onSnapshot((snapshot) => {
-    //   setCities(
-    //     snapshot.docs.map((doc) => ({ id: doc.id, data: doc.data() }))
-    //   )
-    // })
   }, [])
 
-  // useEffect(() => {
-  //   if (cities.length > 0) {
-  //     console.log('cccccities')
+  // const handleDeleteVisited = (selectedVisitedCity) => {
+  //   console.log('selectedVisitedCity', selectedVisitedCity)
+  //   let unvisitedCitiesClone = [...unvisitedCities]
+  //   unvisitedCitiesClone.push({
+  //     id: selectedVisitedCity.id,
+  //     name: selectedVisitedCity.name,
+  //     lat: selectedVisitedCity.lat,
+  //     long: selectedVisitedCity.long,
+  //     visited: 0,
+  //   })
+  //   let sorted = sortCitiesByName(unvisitedCitiesClone)
+  //   setUnvisitedCities(sorted)
+  //   // console.log('visitedCitiesClone', visitedCitiesClone)
+  //   // console.log('sorted', sorted)
 
-  //   }
-  // }, [cities])
+  //   // remove the city from selected list
+  //   const visitedCitiesClone = [...visitedCities]
+  //   const selectedIndex = visitedCities.findIndex((visitedCity) => {
+  //     return visitedCity.name === selectedVisitedCity.name
+  //   })
+  //   visitedCitiesClone.splice(selectedIndex, 1)
+  //   setVisitedCities(visitedCitiesClone)
+  // }
 
-  // useEffect(() => {
-  //   const getCountriesData = async () => {
-  //     fetch('https://disease.sh/v3/covid-19/countries')
-  //       .then((response) => response.json())
-  //       .then((data) => {
-  //         const countries = data.map((country) => ({
-  //           name: country.country,
-  //           value: country.countryInfo.iso2,
-  //         }))
-  //         let sortedData = sortCitiesByName(data)
-  //         console.log('data', data)
-  //         setCountries(countries)
-  //         setMapCountries(data)
-  //         // setTableData(sortedData)
-  //       })
-  //   }
-
-  //   getCountriesData()
-  // }, [])
-
-  const handleDeleteVisited = (selectedVisitedCity) => {
-    console.log('selectedVisitedCity', selectedVisitedCity)
-    let unvisitedCitiesClone = [...unvisitedCities]
-    unvisitedCitiesClone.push({
-      id: selectedVisitedCity.id,
-      name: selectedVisitedCity.name,
-      lat: selectedVisitedCity.lat,
-      long: selectedVisitedCity.long,
-      visited: 0,
-    })
-    let sorted = sortCitiesByName(unvisitedCitiesClone)
-    setUnvisitedCities(sorted)
-    // console.log('visitedCitiesClone', visitedCitiesClone)
-    // console.log('sorted', sorted)
-
-    // remove the city from selected list
-    const visitedCitiesClone = [...visitedCities]
-    const selectedIndex = visitedCities.findIndex((visitedCity) => {
-      return visitedCity.name === selectedVisitedCity.name
-    })
-    visitedCitiesClone.splice(selectedIndex, 1)
-    setVisitedCities(visitedCitiesClone)
+  const hideLoginCard = () => {
+    setLoginCardDimensions({})
   }
 
-  const handleAddSelectedCity = () => {
-    if (!selectedCity) return
+  const handleLoginCard = () => {
+    console.log('handleLoginCard')
+    // setLoginCard(!loginCard)
+    const isAlreadyOpen = Object.keys(loginCardDimensions).length > 0
+    // if (loginCard) setLoginCard(false)
+    if (isAlreadyOpen) setLoginCardDimensions({})
+    else {
+      // if (unseenNotificationAmount > 0) {
+      //   axios.post(server.markNotificationsAsSeen()).then(_ => {
+      //     setUnseenNotificationAmount(0);
+      //   })
+      // }
+      console.log('iconEl', iconEl, loginCardDimensions)
+      const iconMarginRightMarginRight = 32
+      setLoginCardDimensions({
+        top: iconEl.current.clientTop + iconEl.current.clientHeight,
+        right: iconMarginRightMarginRight + iconEl.current.clientWidth,
+      })
+      // setLoginCard(true)
+    }
+  }
 
-    let visitedCitiesClone = [...visitedCities]
-    visitedCitiesClone.push({
-      id: selectedCity.id,
-      name: selectedCity.name,
-      lat: selectedCity.lat,
-      long: selectedCity.long,
-      visited: 1,
-    })
-    let sorted = sortCitiesByName(visitedCitiesClone)
-    setVisitedCities(sorted)
+  const handleLogin = (password) => {
+    // const pw = e.target.value
 
-    // remove the city from selected list
-    const unvisitedCitiesClone = [...unvisitedCities]
-    const selectedIndex = unvisitedCitiesClone.findIndex((unvisitedCity) => {
-      return unvisitedCity.name === selectedCity.name
+    console.log('password', password)
+
+    const getPassword = async () => {
+      // const q = query(collection(db, 'users', 'Password'))
+      getDoc(doc(db, 'cities', 'Password')).then((d) => {
+        console.log('d', d)
+      })
+      const q = query(collection(db, 'users'))
+      const querySnapshot = await getDocs(q)
+      // console.log('querySnapshot', querySnapshot)
+      querySnapshot.forEach((doc) => {
+        const pw = doc.data()
+        console.log('pw', pw.password)
+        if (password === pw.password) {
+          setLoggedIn(true)
+          hideLoginCard()
+        }
+      })
+    }
+    getPassword()
+    // const q = query(collection(db, 'cities'))
+    //   const querySnapshot = await getDocs(q)
+  }
+
+  const saveChanges = () => {
+    const visitedSet = new Set()
+    // const visitedCities = []
+    cities.forEach((city) => {
+      setDoc(doc(db, 'cities', city.name), city).then(() => {
+        if (city.visited === citiesVisitValues.visited.visitedValue) {
+          visitedCities.push(city)
+          // visitedSet.add(city)
+        }
+      })
     })
-    unvisitedCitiesClone.splice(selectedIndex, 1)
-    setUnvisitedCities(unvisitedCitiesClone)
+    console.log('visitedSet', visitedSet)
+    setVisitedCities(visitedCities)
+    // setVisitedCitiesSet(visitedSet)
   }
 
   const handleCityChange = async (e, city) => {
     const selectedVisitedValue = e.target.value
-    console.log('handleCityCha selectedVisitedValue', selectedVisitedValue)
-
-    // const toModify = cities.find((c) => {
-    //   if (c.id === city.id) return city
-    // })
-    // city.visited = selectedVisitedValue
-
     const toModifyIndex = cities.findIndex((c) => c.id === city.id)
-    console.log(toModifyIndex)
+    // console.log(
+    //   'handleCityCha selectedVisitedValue',
+    //   toModifyIndex,
+    //   selectedVisitedValue
+    // )
+
+    const s = new Set(visitedCitiesSet)
+    console.log('s', s, s === visitedCitiesSet)
+    if (selectedVisitedValue === citiesVisitValues.visited.visitedValue) {
+      s.add(city.name)
+      console.log('added', s)
+      // const s = selectedVisitedValue
+      // setVisitedCitiesSet(set => {
+      //   console.log('set', set)
+      //   set.add(city.name)
+      // })
+    } else s.delete(city.name)
+    setVisitedCitiesSet(s)
+    console.log(
+      'mmm',
+      visitedCitiesSet.size === s.size,
+      visitedCitiesSet.size,
+      s.size
+    )
 
     let citiesClone = [...cities]
     // 2. Make a shallow copy of the item you want to mutate
@@ -171,132 +216,101 @@ function App() {
     setCities(citiesClone)
   }
 
-  // const handleCityChange = async (e) => setSelectedCity(e.target.value)
+  const handleLogout = () => {
+    setLoggedIn(false)
+    hideLoginCard()
+  }
 
-  // const getCityPos = (id) => cities.findIndex((city) => city.id === id)
-
-  // const handleDragEnd = (e) => {
-  //   const { active, over } = e
-  //   console.log('e', active, over)
-
-  //   if (active.id === over.id) return
-
-  //   setCities((cities) => {
-  //     const originalPos = getCityPos(active.id)
-  //     const newPos = getCityPos(over.id)
-
-  //     return arrayMove(cities, originalPos, newPos)
-  //   })
-  // }
-
-  // const sensors = useSensors(
-  //   useSensor(PointerSensor),
-  //   useSensor(KeyboardSensor, {
-  //     coordinateGetter: sortableKeyboardCoordinates,
-  //   })
-  // )
-
-  const handleToVisitCityChange = (e) => {}
+  const handleInsta = () => {
+    window.open('https://www.instagram.com/elmesias_delaspesas/')
+    // window.open(window.location.origin + "/ROUTE_U_WANT", '_blank', 'toolbar=0,location=0,menubar=0');
+  }
 
   return (
-    <div className='app'>
-      {/* <Input onSubmit={addCity} /> */}
-      {/* <div style={{ margin: '100px;' }}>a</div> */}
-      <section className='app__hero'>
-        <h2 style={{ paddingBottom: '10px' }}>
-          ACOMPAÑANOS A CORRER A PUERTO RICO COMPLETO EN <span>90 DÍAS</span>
-        </h2>
-        <p>
-          El reto consiste de correr un{' '}
-          <strong style={{ color: '#0050ef' }}>5K</strong> en cada uno de los
-          pueblos de Puerto Rico. También, dentro de esos{' '}
-          <strong style={{ color: '#ed0000' }}>90 días</strong> tendremos
-          secciones de{' '}
-          <strong style={{ color: '#0050ef' }}>estiramiento</strong> y{' '}
-          <strong style={{ color: '#0050ef' }}>movilidad</strong>.
-        </p>
-      </section>
-      <section className='app__citiesList'>
-        <CitiesList cities={cities} onCityChange={handleCityChange} />
-      </section>
-      {/* <section>
-        <Card className='app__toVisitList'>
-          <CardContent>
-            <FormControl>
-              <InputLabel id='select-label'>TODAS</InputLabel>
-              <Select
-                variant='outlined'
-                onChange={handleToVisitCityChange}
-                value={unvisitedCities[0]?.name}
-              >
-                {cities?.map((city) => {
-                  return (
-                    <MenuItem value={city}>
-                      <Circle visited={city.visited}></Circle>
-                      <span>{city.name}</span>
-                    </MenuItem>
-                  )
-                })}
-              </Select>
-            </FormControl>
-            <button
-              onClick={addSelectedCity}
-              className={`app__addButton ${
-                !selectedCity ? 'app__addButtonDisabled' : ''
-              }`}
-            >
-              Add
-            </button>
-          </CardContent>
-        </Card>
-      </section> */}
-
-      {/* <DndContext onDragEnd={handleDragEnd} collisionDetection={closestCorners}> */}
-      {/* <div className='app__cityColumns'> */}
-      {/* <VisitedCitiesList
-        cities={visitedCities}
-        onDeleteVisitedCity={handleDeleteVisited}
-        onAddSelectedCity={handleAddSelectedCity}
-      /> */}
-      {/* <Column id='toDo' cities={cities}></Column> */}
-      {/* </div> */}
-      {/* </DndContext> */}
-
-      {cities.length > 0 && (
-        <section id='app__mapContainer'>
-          <PRMap cities={cities} center={mapCenter} zoom={mapZoom} />
+    <AuthProvider>
+      <div className='app'>
+        {/* <Input onSubmit={addCity} /> */}
+        {/* <div style={{ margin: '100px;' }}>a</div> */}
+        <header id='header'>
+          <Header
+            iconEl={iconEl}
+            isLoggedIn={loggedIn}
+            onLogout={handleLogout}
+            handleLoginCard={handleLoginCard}
+            loginCardDimensions={loginCardDimensions}
+          />
+          {Object.keys(loginCardDimensions).length > 0 && (
+            <LoginCard
+              loginCardDimensions={loginCardDimensions}
+              onLogin={handleLogin}
+              onHideCard={() => setLoginCardDimensions({})}
+            />
+          )}
+        </header>
+        {/* <div onClick={hideLoginCard}> */}
+        <section className='app__hero' onClick={hideLoginCard}>
+          <h2 style={{ paddingBottom: '10px' }}>
+            ACOMPAÑANOS A CORRER A PUERTO RICO COMPLETO EN <span>90 DÍAS</span>
+          </h2>
+          <p>
+            El reto consiste de correr un{' '}
+            <strong style={{ color: '#0050ef' }}>5K</strong> en cada uno de los
+            pueblos de Puerto Rico. También, dentro de esos{' '}
+            <strong style={{ color: '#ed0000' }}>90 días</strong> tendremos
+            secciones de{' '}
+            <strong style={{ color: '#0050ef' }}>estiramiento</strong> y{' '}
+            <strong style={{ color: '#0050ef' }}>movilidad</strong>.
+          </p>
+          {/* <FaInstagram onClick={handleInsta} /> */}
         </section>
-      )}
-
-      <section className='app__cities'>
-        {/* <FormControl>
-          <Select
-            variant='outlined'
-            onChange={onCityChange}
-            value={cities[0]?.lat}
-          >
-            {cities.map((city) => {
-              return city.visited <= 0 ? null : (
-                <MenuItem value={city}>{city.name}</MenuItem>
-              )
-            })}
-          </Select>
-        </FormControl> */}
-
-        {/* Drag & Drop */}
-
-        <Card className='app__cityList'>
-          <CardContent>
+        {loggedIn && (
+          <section className='app__citiesList' onClick={hideLoginCard}>
             <h3>
               Ya corrimos en{' '}
-              <span style={{ color: '#0050ef' }}>{visitedCities.length}</span>{' '}
+              <span style={{ color: '#0050ef' }}>{visitedCitiesSet?.size}</span>{' '}
               ciudades
             </h3>
-            <Table cities={cities} />
-          </CardContent>
-        </Card>
-      </section>
-    </div>
+            <CitiesList
+              cities={cities}
+              onCityChange={handleCityChange}
+              visitedAmount={visitedCitiesSet?.size}
+            />
+            <Button
+              onClick={saveChanges}
+              fullWidth
+              color='primary'
+              variant='contained'
+              style={{ marginTop: '10px' }}
+            >
+              Guardar Cambios
+            </Button>
+          </section>
+        )}
+        {!loggedIn && (
+          <section className='app__citiesList'>
+            <Card className='app__cityListCard'>
+              <CardContent>
+                <h3>
+                  Ya corrimos en{' '}
+                  <span style={{ color: '#0050ef' }}>
+                    {visitedCities.length}
+                  </span>{' '}
+                  ciudades
+                </h3>
+                <Table cities={cities} />
+              </CardContent>
+            </Card>
+          </section>
+        )}
+
+        {cities.length > 0 && (
+          <section id='app__mapContainer'>
+            <PRMap cities={cities} />
+          </section>
+        )}
+        {/* </div> */}
+      </div>
+    </AuthProvider>
   )
 }
 
@@ -387,3 +401,51 @@ export default App
 //     Add
 //   </button>
 // </section>
+
+// const handleAddSelectedCity = () => {
+//   if (!selectedCity) return
+
+//   let visitedCitiesClone = [...visitedCities]
+//   visitedCitiesClone.push({
+//     id: selectedCity.id,
+//     name: selectedCity.name,
+//     lat: selectedCity.lat,
+//     long: selectedCity.long,
+//     visited: 1,
+//   })
+//   let sorted = sortCitiesByName(visitedCitiesClone)
+//   setVisitedCities(sorted)
+
+//   // remove the city from selected list
+//   const unvisitedCitiesClone = [...unvisitedCities]
+//   const selectedIndex = unvisitedCitiesClone.findIndex((unvisitedCity) => {
+//     return unvisitedCity.name === selectedCity.name
+//   })
+//   unvisitedCitiesClone.splice(selectedIndex, 1)
+//   setUnvisitedCities(unvisitedCitiesClone)
+// }
+
+// const handleCityChange = async (e) => setSelectedCity(e.target.value)
+
+// const getCityPos = (id) => cities.findIndex((city) => city.id === id)
+
+// const handleDragEnd = (e) => {
+//   const { active, over } = e
+//   console.log('e', active, over)
+
+//   if (active.id === over.id) return
+
+//   setCities((cities) => {
+//     const originalPos = getCityPos(active.id)
+//     const newPos = getCityPos(over.id)
+
+//     return arrayMove(cities, originalPos, newPos)
+//   })
+// }
+
+// const sensors = useSensors(
+//   useSensor(PointerSensor),
+//   useSensor(KeyboardSensor, {
+//     coordinateGetter: sortableKeyboardCoordinates,
+//   })
+// )

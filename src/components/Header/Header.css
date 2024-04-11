@@ -1,0 +1,51 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  min-height: 80px;
+  text-align: center;
+  padding: 0 10px;
+}
+
+.mmm {
+  float: right;
+  position: relative;
+  /* top: 0px; */
+  /* right: 0px; */
+  /* height: 40px; */
+  min-height: 80px;
+  text-align: center;
+}
+
+.header__icon > svg.MuiSvgIcon-root {
+  /* height: 32px;
+  width: 32px; */
+  cursor: pointer !important;
+}
+
+@media only screen and (max-width: 425px) {
+  .header {
+    float: none;
+    position: static;
+    display: flex;
+    justify-content: space-between;
+    /* margin: auto 32px; */
+    /* min-height: 80px; */
+  }
+}
+
+/* .header > svg > .label {
+  background-color: #f11008;
+  color: white;
+  border-radius: 50%;
+  display: inline-block;
+  padding-left: 4px;
+  padding-right: 4px;
+  text-align: center;
+  font-size: 10px;
+}
+.header__icon > .notificationAmountLabel {
+  display: inline-block;
+  position: absolute;
+  top: 14px;
+  right: -10px;
+} */

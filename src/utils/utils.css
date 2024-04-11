@@ -10,6 +10,10 @@
   border-radius: 50%;
 }
 
+.util__circleWithBorder > span {
+  padding-left: 20px;
+}
+
 .util__Grey {
   border: solid #808080 3px;
   background: #80808044;
@@ -25,10 +29,6 @@
   background: #0050ef44;
 }
 
-.util__circleWithBorder > span {
-  padding-left: 20px;
-}
-
 .util__cityInfoName {
   font-size: 20px;
   font-weight: bold;
@@ -37,7 +37,4 @@
 
 .util__cityInfoContainer {
   width: 150px;
-}
-
-.util__infoVisited {
 }
