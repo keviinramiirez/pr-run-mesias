@@ -18,6 +18,10 @@ body {
   padding: 20px;
 }
 
+.app__welcome > h2 > span {
+  color: #2563eb !important;
+}
+
 .app__hero {
   flex: 0.9;
 }
@@ -32,6 +36,10 @@ body {
 .app__cityColumns {
   display: flex;
   /* width: 90%; */
+}
+
+.app__visitedCitiesList {
+  margin-bottom: 20px;
 }
 
 .MuiFormControl-root {

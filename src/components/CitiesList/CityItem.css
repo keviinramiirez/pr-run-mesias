@@ -5,9 +5,13 @@
   background-color: white;
   border-radius: 5px;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
-  /* width: 100%; */
+  height: 30px !important;
   padding: 20px;
   height: 40px;
   touch-action: none;
   justify-content: space-around;
+}
+
+.cityItem > .MuiFormControl-root > .MuiInputBase-root {
+  height: 40px !important;
 }

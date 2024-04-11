@@ -9,23 +9,35 @@ const types = {
 
 const AuthReducer = (state, action) => {
   const { type, payload } = action
+  // console.log('AuthReducer')
 
   switch (type) {
     case types.SET_USER: {
-      const { password } = payload
+      const { token } = payload
+      console.log('AuthReducer SET_USER', payload)
       return {
-        // ...state,
-        password,
+        ...state,
+        password: token,
       }
     }
     case types.LOGIN: {
-      const { password, token, exp } = payload
-      if (token && exp) setLocalStorage({ token, exp }) // Local Storage
+      const { password } = payload
+      console.log('Reducer password', password)
+      // if (password && exp)
+      //   setLocalStorage({ token: password, exp }) // Local Storage
+      setLocalStorage({ token: password, exp: 'to be defined' }) // Local Storage
 
       return {
         ...state, //not neccessary I think
         password,
       }
+      // const { password, token, exp } = payload
+      // if (token && exp) setLocalStorage({ token, exp }) // Local Storage
+
+      // return {
+      //   ...state, //not neccessary I think
+      //   password,
+      // }
     }
     case types.VERIFY: {
       const { password } = payload

@@ -6,16 +6,6 @@
   padding: 0 10px;
 }
 
-.mmm {
-  float: right;
-  position: relative;
-  /* top: 0px; */
-  /* right: 0px; */
-  /* height: 40px; */
-  min-height: 80px;
-  text-align: center;
-}
-
 .header__icon > svg.MuiSvgIcon-root {
   /* height: 32px;
   width: 32px; */

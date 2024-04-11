@@ -1,11 +1,9 @@
 import './App.css'
-
-// import { DndContext, closestCorners } from '@dnd-kit/core'
-// import { arrayMove } from '@dnd-kit/sortable'
 import 'leaflet/dist/leaflet.css'
-import React, { useRef, useEffect, useState } from 'react'
-import { FaInstagram } from 'react-icons/fa'
+import React, { useRef, useEffect, useState, useContext } from 'react'
+import { auth, db } from './Firebase'
 import AuthProvider from './store/AuthProvider'
+import bcrypt from 'bcryptjs'
 import {
   Card,
   MenuItem,
@@ -15,9 +13,6 @@ import {
   CardContent,
   Button,
 } from '@material-ui/core'
-import PRMap from './components/Map/PRMap'
-import Table from './Table'
-import { auth, db } from './Firebase'
 import {
   collection,
   query,
@@ -27,12 +22,14 @@ import {
   setDoc,
   doc,
 } from 'firebase/firestore'
-// import { sortCitiesByName } from './utils/util'
-// import Circle from './components/Circle/Circle'
+// import { FaInstagram } from 'react-icons/fa'
+import PRMap from './components/Map/PRMap'
+import Table from './Table'
 import CitiesList from './components/CitiesList/CitiesList'
 import Header from './components/Header/Header'
 import LoginCard from './components/Header/LoginCard'
 import { citiesVisitValues } from './utils/util'
+import VisitedCitiesList from './components/VisitedCitiesList/VisitedCitiesList'
 
 function App() {
   const [cities, setCities] = useState([])
@@ -40,6 +37,9 @@ function App() {
   const [visitedCitiesSet, setVisitedCitiesSet] = useState(new Set())
   const [loginCardDimensions, setLoginCardDimensions] = useState({})
   const [loggedIn, setLoggedIn] = useState(false)
+  // const { signin } = useContext(AuthContext)
+  // const { authState, verifyPermission, signup, resetState } = useContext(AuthContext);
+  // const { userType } = authState;
 
   // const [mapZoom, _] = useState(8)
   // const [mapCenter, __] = useState({
@@ -50,11 +50,9 @@ function App() {
   const iconEl = useRef(null)
 
   useEffect(() => {
-    // auth.onAuthStateChanged(authUser => {
-    //   console.log('USER: ', authUser);
-    //   if (authUser) {
-    //   }
-    // })
+    // const hashedToken = bcrypt.hashSync('Millonario')
+    // setDoc(doc(db, 'users', 'password'), { password: hashedToken })
+
     const visitedSet = new Set()
     const getCities = async () => {
       // console.log('db', db)
@@ -76,88 +74,29 @@ function App() {
       setCities(fetchedCities)
       setVisitedCities(visitedCities)
       setVisitedCitiesSet(visitedSet)
-      console.log('visitedSet.size', visitedSet.size)
-      console.log('visitedCities.lengtn', visitedCities.length)
     }
 
     getCities()
   }, [])
 
-  // const handleDeleteVisited = (selectedVisitedCity) => {
-  //   console.log('selectedVisitedCity', selectedVisitedCity)
-  //   let unvisitedCitiesClone = [...unvisitedCities]
-  //   unvisitedCitiesClone.push({
-  //     id: selectedVisitedCity.id,
-  //     name: selectedVisitedCity.name,
-  //     lat: selectedVisitedCity.lat,
-  //     long: selectedVisitedCity.long,
-  //     visited: 0,
-  //   })
-  //   let sorted = sortCitiesByName(unvisitedCitiesClone)
-  //   setUnvisitedCities(sorted)
-  //   // console.log('visitedCitiesClone', visitedCitiesClone)
-  //   // console.log('sorted', sorted)
-
-  //   // remove the city from selected list
-  //   const visitedCitiesClone = [...visitedCities]
-  //   const selectedIndex = visitedCities.findIndex((visitedCity) => {
-  //     return visitedCity.name === selectedVisitedCity.name
-  //   })
-  //   visitedCitiesClone.splice(selectedIndex, 1)
-  //   setVisitedCities(visitedCitiesClone)
-  // }
-
   const hideLoginCard = () => {
     setLoginCardDimensions({})
   }
 
-  const handleLoginCard = () => {
-    console.log('handleLoginCard')
-    // setLoginCard(!loginCard)
+  const handleLoginCard = (loggedInSuccesfully = false) => {
     const isAlreadyOpen = Object.keys(loginCardDimensions).length > 0
-    // if (loginCard) setLoginCard(false)
-    if (isAlreadyOpen) setLoginCardDimensions({})
-    else {
-      // if (unseenNotificationAmount > 0) {
-      //   axios.post(server.markNotificationsAsSeen()).then(_ => {
-      //     setUnseenNotificationAmount(0);
-      //   })
-      // }
-      console.log('iconEl', iconEl, loginCardDimensions)
+    console.log('handleLoginCard', isAlreadyOpen, loggedInSuccesfully)
+
+    if (isAlreadyOpen || loggedInSuccesfully) {
+      hideLoginCard()
+      if (loggedInSuccesfully) setLoggedIn(true)
+    } else if (!isAlreadyOpen) {
       const iconMarginRightMarginRight = 32
       setLoginCardDimensions({
         top: iconEl.current.clientTop + iconEl.current.clientHeight,
         right: iconMarginRightMarginRight + iconEl.current.clientWidth,
       })
-      // setLoginCard(true)
     }
-  }
-
-  const handleLogin = (password) => {
-    // const pw = e.target.value
-
-    console.log('password', password)
-
-    const getPassword = async () => {
-      // const q = query(collection(db, 'users', 'Password'))
-      getDoc(doc(db, 'cities', 'Password')).then((d) => {
-        console.log('d', d)
-      })
-      const q = query(collection(db, 'users'))
-      const querySnapshot = await getDocs(q)
-      // console.log('querySnapshot', querySnapshot)
-      querySnapshot.forEach((doc) => {
-        const pw = doc.data()
-        console.log('pw', pw.password)
-        if (password === pw.password) {
-          setLoggedIn(true)
-          hideLoginCard()
-        }
-      })
-    }
-    getPassword()
-    // const q = query(collection(db, 'cities'))
-    //   const querySnapshot = await getDocs(q)
   }
 
   const saveChanges = () => {
@@ -197,12 +136,12 @@ function App() {
       // })
     } else s.delete(city.name)
     setVisitedCitiesSet(s)
-    console.log(
-      'mmm',
-      visitedCitiesSet.size === s.size,
-      visitedCitiesSet.size,
-      s.size
-    )
+    // console.log(
+    //   'mmm',
+    //   visitedCitiesSet.size === s.size,
+    //   visitedCitiesSet.size,
+    //   s.size
+    // )
 
     let citiesClone = [...cities]
     // 2. Make a shallow copy of the item you want to mutate
@@ -226,6 +165,41 @@ function App() {
     // window.open(window.location.origin + "/ROUTE_U_WANT", '_blank', 'toolbar=0,location=0,menubar=0');
   }
 
+  const handleLogin = (isLoggedIn) => {
+    if (isLoggedIn) {
+      hideLoginCard()
+      setLoggedIn(true)
+    }
+    // const pw = e.target.value
+
+    // console.log('password', password)
+
+    // signin({ password }).then((res) => {
+    //   console.log('Login Successful')
+    //   hideLoginCard()
+    //   setLoggedIn(true)
+    // })
+
+    // const getPassword = async () => {
+    //   // const q = query(collection(db, 'users', 'Password'))
+    //   // getDoc(doc(db, 'cities', 'password')).then((d) => {
+    //   //   console.log('d', d)
+    //   // })
+    //   const q = query(collection(db, 'users'))
+    //   const querySnapshot = await getDocs(q)
+    //   // console.log('querySnapshot', querySnapshot)
+    //   querySnapshot.forEach((doc) => {
+    //     const pw = doc.data()
+    //     console.log('pw', pw.password)
+    //     if (password === pw.password) {
+    //       setLoggedIn(true)
+    //       hideLoginCard()
+    //     }
+    //   })
+    // }
+    // getPassword()
+  }
+
   return (
     <AuthProvider>
       <div className='app'>
@@ -236,75 +210,97 @@ function App() {
             iconEl={iconEl}
             isLoggedIn={loggedIn}
             onLogout={handleLogout}
+            // onLogin={handleLogin}
+            // onLogout={(() => logout().then(redirect => setRedirectToSignin(redirect)))}
             handleLoginCard={handleLoginCard}
             loginCardDimensions={loginCardDimensions}
+            onHideLoginCard={hideLoginCard}
           />
-          {Object.keys(loginCardDimensions).length > 0 && (
+          {/* {Object.keys(loginCardDimensions).length > 0 && (
             <LoginCard
               loginCardDimensions={loginCardDimensions}
               onLogin={handleLogin}
               onHideCard={() => setLoginCardDimensions({})}
             />
-          )}
+          )} */}
         </header>
         {/* <div onClick={hideLoginCard}> */}
-        <section className='app__hero' onClick={hideLoginCard}>
-          <h2 style={{ paddingBottom: '10px' }}>
-            ACOMPAÑANOS A CORRER A PUERTO RICO COMPLETO EN <span>90 DÍAS</span>
-          </h2>
-          <p>
-            El reto consiste de correr un{' '}
-            <strong style={{ color: '#0050ef' }}>5K</strong> en cada uno de los
-            pueblos de Puerto Rico. También, dentro de esos{' '}
-            <strong style={{ color: '#ed0000' }}>90 días</strong> tendremos
-            secciones de{' '}
-            <strong style={{ color: '#0050ef' }}>estiramiento</strong> y{' '}
-            <strong style={{ color: '#0050ef' }}>movilidad</strong>.
-          </p>
-          {/* <FaInstagram onClick={handleInsta} /> */}
-        </section>
+
         {loggedIn && (
-          <section className='app__citiesList' onClick={hideLoginCard}>
-            <h3>
-              Ya corrimos en{' '}
-              <span style={{ color: '#0050ef' }}>{visitedCitiesSet?.size}</span>{' '}
-              ciudades
-            </h3>
-            <CitiesList
-              cities={cities}
-              onCityChange={handleCityChange}
-              visitedAmount={visitedCitiesSet?.size}
-            />
-            <Button
-              onClick={saveChanges}
-              fullWidth
-              color='primary'
-              variant='contained'
-              style={{ marginTop: '10px' }}
-            >
-              Guardar Cambios
-            </Button>
-          </section>
+          <>
+            {/* <section className='app__welcome' onClick={hideLoginCard}>
+              <h2 style={{ paddingBottom: '10px' }}>
+                BIENVENIDO MILLONARIO <span>MESIAS</span>
+              </h2>
+            </section> */}
+            <section className='app__citiesList' onClick={hideLoginCard}>
+              <h3>
+                Ya corrimos en{' '}
+                <span style={{ color: '#0050ef' }}>
+                  {visitedCitiesSet?.size}
+                </span>{' '}
+                ciudades
+              </h3>
+              <CitiesList
+                cities={cities}
+                onCityChange={handleCityChange}
+                visitedAmount={visitedCitiesSet?.size}
+              />
+              <Button
+                onClick={saveChanges}
+                fullWidth
+                color='primary'
+                variant='contained'
+                style={{ marginTop: '10px' }}
+              >
+                Guardar Cambios
+              </Button>
+            </section>
+          </>
         )}
         {!loggedIn && (
-          <section className='app__citiesList'>
-            <Card className='app__cityListCard'>
-              <CardContent>
-                <h3>
-                  Ya corrimos en{' '}
-                  <span style={{ color: '#0050ef' }}>
-                    {visitedCities.length}
-                  </span>{' '}
-                  ciudades
-                </h3>
-                <Table cities={cities} />
-              </CardContent>
-            </Card>
-          </section>
+          <>
+            <section className='app__hero' onClick={hideLoginCard}>
+              <h2 style={{ paddingBottom: '10px' }}>
+                ACOMPAÑANOS A CORRER A PUERTO RICO COMPLETO EN{' '}
+                <span>90 DÍAS</span>
+              </h2>
+              <p>
+                El reto consiste de correr un{' '}
+                <strong style={{ color: '#0050ef' }}>5K</strong> en cada uno de
+                los pueblos de Puerto Rico. También, dentro de esos{' '}
+                <strong style={{ color: '#ed0000' }}>90 días</strong> tendremos
+                secciones de{' '}
+                <strong style={{ color: '#0050ef' }}>estiramiento</strong> y{' '}
+                <strong style={{ color: '#0050ef' }}>movilidad</strong>.
+              </p>
+              {/* <FaInstagram onClick={handleInsta} /> */}
+            </section>
+            {cities.length > 0 && (
+              <section
+                className='app__visitedCitiesList'
+                onClick={hideLoginCard}
+              >
+                {/* <VisitedCitiesList /> */}
+                <Card className='app__cityListCard'>
+                  <CardContent>
+                    <h3>
+                      Ya corrimos en{' '}
+                      <span style={{ color: '#0050ef' }}>
+                        {visitedCities.length}
+                      </span>{' '}
+                      ciudades
+                    </h3>
+                    <Table cities={cities} />
+                  </CardContent>
+                </Card>
+              </section>
+            )}
+          </>
         )}
 
         {cities.length > 0 && (
-          <section id='app__mapContainer'>
+          <section id='app__mapContainer' onClick={hideLoginCard}>
             <PRMap cities={cities} />
           </section>
         )}

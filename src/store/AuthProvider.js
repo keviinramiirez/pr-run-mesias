@@ -1,11 +1,14 @@
 import { useReducer } from 'react'
 import AuthContext from './AuthContext'
 import AuthReducer from './AuthReducer'
-// import axios from 'axios'
-// import { logoutStorage } from '../services/authService'
+import bcrypt from 'bcryptjs'
+import { logoutStorage, getToken } from '../services/authService'
 // import { ServerRoutes as server } from '../services/apiService'
+import { db } from '../Firebase'
+import { collection, query, getDocs } from 'firebase/firestore'
 
 const AuthProvider = ({ children }) => {
+  // console.log('AuthProvider')
   const initState = {
     password: '',
   }
@@ -29,19 +32,79 @@ const AuthProvider = ({ children }) => {
   //   getUserData()
   // }
 
-  // const signinFetch = async (userInfo, setRedirect) => {
-  //   const { email, password } = userInfo;
-  //   // console.log('signinFetch', email, password)
-  //   const signin = async () => {
-  //     axios.post(server.login(), { email, password }).then(async res => {
-  //       // console.log('res.data', res.data)
-  //       const { user_id, token } = res.data
-  //       // console.log(user_id)
-  //       return verifyTokenAndGetUserInfoFetch(user_id, token, setRedirect)
-  //     })
-  //   }
-  //   signin()
-  // }
+  const fetchUserDataByToken = async () => {
+    const getUserData = async () => {
+      const token = getToken()
+      console.log('fetchUserDataByToken token', token)
+      if (!token) return
+      // console.log('token', token)
+
+      const q = query(collection(db, 'users'))
+      const querySnapshot = await getDocs(q)
+      // console.log('querySnapshot', querySnapshot)
+
+      querySnapshot.forEach(async (doc) => {
+        const hashedPassword = doc.data().password
+        // console.log('forEach hashedPassword', hashedPassword)
+
+        if (token === hashedPassword) {
+          console.log('token === hashedPassword', true)
+          dispatchAuthAction({
+            type: 'SET_USER',
+            payload: { token },
+          })
+        }
+      })
+    }
+    getUserData()
+  }
+
+  const signinFetch = async (password) => {
+    console.log('signinFetch', password)
+
+    const signin = async () => {
+      // const isLoggedIn = false
+      // const q = query(collection(db, 'users', 'Password'))
+      // getDoc(doc(db, 'cities', 'password')).then((d) => {
+      //   console.log('d', d)
+      // })
+      const q = query(collection(db, 'users'))
+      const querySnapshot = await getDocs(q)
+      // console.log('querySnapshot', querySnapshot)
+      console.log('querySnapshot', querySnapshot)
+      querySnapshot.forEach(async (doc) => {
+        const hashedPassword = doc.data().password
+
+        if (await bcrypt.compare(password, hashedPassword)) {
+          dispatchAuthAction({
+            type: 'LOGIN',
+            payload: { password: hashedPassword },
+          })
+          // isLoggedIn = true
+          // console.log('signinFetch isLoggedIn', isLoggedIn)
+        }
+        // return await bcrypt.compare(password, hashedPassword)
+        // await bcrypt.compare(password, hashedPassword).then((res, isMatch) => {
+        //   console.log('bcrypt res', res, isMatch)
+        //   dispatchAuthAction({
+        //     type: 'LOGIN',
+        //     payload: { password: hashedPassword },
+        //   })
+        // })
+        // else isLoggedIn = false
+      })
+      // return isLoggedIn
+    }
+    signin()
+    // return signin().then((hashedPassword) => {
+    //   console.log('hashedPassword', hashedPassword)
+    //   dispatchAuthAction({
+    //     type: 'LOGIN',
+    //     payload: { password: hashedPassword },
+    //   })
+    //   return hashedPassword
+    // })
+  }
 
   // const signupFetch = async (userInfo, codeToRemove, setRedirectToApp) => {
   //   const signup = async () => {
@@ -95,29 +158,32 @@ const AuthProvider = ({ children }) => {
   //   return verifyPermission()
   // }
 
-  // const logoutFetch = () => {
-  //   const logout = async () => {
-  //     // return axios.get('/protected/auth/logout')
-  //     return axios.get(server.logout()).then(_ => {
-  //       logoutStorage();
-  //       resetState();
-  //       dispatchAuthAction({ type: 'RESET', payload: initState })
+  const logoutFetch = () => {
+    // const logout = async () => {
+    // return axios.get('/protected/auth/logout')
+    // return axios.get(server.logout()).then(_ => {
+    //   logoutStorage();
+    //   resetState();
+    //   console.log('resetting state')
+    //   return true;
+    // })
+    logoutStorage()
+    resetState()
+    console.log('resetting state')
+    // }
+    // logout()
+  }
 
-  //       console.log('resetting state')
-  //       return true;
-  //     }).catch(_ => false)
-  //   }
-  //   return logout()
-  // }
+  console.log('AuthProvider')
 
   const authContext = {
     authState,
     resetState,
     // verifyPermission: verifyPermissionFetch,
     // signup: signupFetch,
-    // signin: signinFetch,
-    // logout: logoutFetch,
-    // fetchUserDataByToken
+    signin: signinFetch,
+    logout: logoutFetch,
+    fetchUserDataByToken,
   }
 
   return (
