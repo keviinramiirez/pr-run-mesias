@@ -18,6 +18,7 @@
   /* overflow: scroll !important; */
   height: 350px !important;
   color: #6a5d5d;
+  max-width: 400px !important;
 }
 
 .app__citiesList > .MuiPaper-root.MuiCard-root {

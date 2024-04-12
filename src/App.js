@@ -281,8 +281,8 @@ function App() {
                 className='app__visitedCitiesList'
                 onClick={hideLoginCard}
               >
-                {/* <VisitedCitiesList /> */}
-                <Card className='app__cityListCard'>
+                <VisitedCitiesList cities={visitedCities} />
+                {/* <Card className='app__cityListCard'>
                   <CardContent>
                     <h3>
                       Ya corrimos en{' '}
@@ -293,7 +293,7 @@ function App() {
                     </h3>
                     <Table cities={cities} />
                   </CardContent>
-                </Card>
+                </Card> */}
               </section>
             )}
           </>
