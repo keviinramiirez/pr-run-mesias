@@ -14,7 +14,6 @@ const AuthReducer = (state, action) => {
   switch (type) {
     case types.SET_USER: {
       const { token } = payload
-      console.log('AuthReducer SET_USER', payload)
       return {
         ...state,
         password: token,

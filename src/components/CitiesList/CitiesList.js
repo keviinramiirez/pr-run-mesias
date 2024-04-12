@@ -11,9 +11,8 @@ import {
 import CityItem from './CityItem'
 import '../../App.css'
 
-const CitiesList = ({ cities, onCityChange, visitedAmount }) => {
+const CitiesList = ({ cities, visitedAmount, onCityChange }) => {
   // 0 = unvisitedGrey, 1 = visitedGreen, 2 = toVisitBlue
-  console.log()
 
   return (
     <>
@@ -26,35 +25,17 @@ const CitiesList = ({ cities, onCityChange, visitedAmount }) => {
           className='citiesList__cardContent'
           style={{ overflow: 'hidden !important' }}
         >
-          <div
-            className='citiesList__items'
-            // style={{
-            //   height: '400px',
-            //   overflow: 'scroll',
-            //   gap: '15px',
-            //   display: 'flex',
-            //   flexDirection: 'column',
-            // }}
-          >
+          <div className='citiesList__items'>
+            {/* style={{
+              height: '400px',
+              overflow: 'scroll',
+              gap: '15px',
+              display: 'flex',
+              flexDirection: 'column',
+            }} */}
             {cities?.map((city) => (
               <CityItem key={city.id} city={city} onCityChange={onCityChange} />
             ))}
-            {/* <FormControl>
-          <InputLabel id='select-label'>STATUS</InputLabel>
-          <Select variant='outlined' onChange={onCityChange} value={0}>
-          </Select>
-        </FormControl> */}
-            {/* <div>
-
-        {/* {cities?.map((city) => (
-          <VisitedCity
-            key={city.id}
-            cities={cities}
-            city={city}
-            onCityChange={onCityChange}
-          />
-        ))} */}
-            {/* </div> */}
           </div>
         </CardContent>
       </Card>

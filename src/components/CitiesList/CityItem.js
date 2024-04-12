@@ -15,15 +15,7 @@ const CityItem = ({ city, onCityChange }) => {
   // }
 
   const visitedValues = ['Aún por visitar', 'Ya lo corrimos', 'Próxima corrida']
-  const [selectedVisitedValue, setSelectedVisitedValue] = useState(city)
-  // console.log('CityItem', city)
-
-  // const onCityChange = (e) => {
-  //   const label = e.target.value
-  //   console.log('handleCityChange', e)
-
-  //   setSelectedCity(label)
-  // }
+  // const [selectedVisitedValue, setSelectedVisitedValue] = useState(city)
 
   return (
     <div

@@ -8,7 +8,6 @@ import { db } from '../Firebase'
 import { collection, query, getDocs } from 'firebase/firestore'
 
 const AuthProvider = ({ children }) => {
-  // console.log('AuthProvider')
   const initState = {
     password: '',
   }
@@ -173,8 +172,6 @@ const AuthProvider = ({ children }) => {
     // }
     // logout()
   }
-
-  console.log('AuthProvider')
 
   const authContext = {
     authState,

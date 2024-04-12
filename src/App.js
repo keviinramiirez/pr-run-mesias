@@ -33,8 +33,10 @@ import VisitedCitiesList from './components/VisitedCitiesList/VisitedCitiesList'
 
 function App() {
   const [cities, setCities] = useState([])
+  // const [citiesOrig, setCitiesOrig] = useState([])
   const [visitedCities, setVisitedCities] = useState([])
   const [visitedCitiesSet, setVisitedCitiesSet] = useState(new Set())
+  const [modifiedCitiesMap, setModifiedCitiesMap] = useState(new Map())
   const [loginCardDimensions, setLoginCardDimensions] = useState({})
   const [loggedIn, setLoggedIn] = useState(false)
   // const { signin } = useContext(AuthContext)
@@ -71,7 +73,10 @@ function App() {
           visitedSet.add(cityData.name)
         }
       })
+      // const citiesClone = [...fetchedCities]
+      // console.log('citiesClone', citiesClone)
       setCities(fetchedCities)
+      // setCitiesOrig(citiesClone)
       setVisitedCities(visitedCities)
       setVisitedCitiesSet(visitedSet)
     }
@@ -117,6 +122,7 @@ function App() {
 
   const handleCityChange = async (e, city) => {
     const selectedVisitedValue = e.target.value
+    console.log('selectedVisitedValue', selectedVisitedValue)
     const toModifyIndex = cities.findIndex((c) => c.id === city.id)
     // console.log(
     //   'handleCityCha selectedVisitedValue',
@@ -124,24 +130,33 @@ function App() {
     //   selectedVisitedValue
     // )
 
-    const s = new Set(visitedCitiesSet)
-    console.log('s', s, s === visitedCitiesSet)
+    const visitedSet = new Set(visitedCitiesSet)
+    const modifiedMapClone = new Map(modifiedCitiesMap)
+    let modifiedCityData = modifiedMapClone.get(city.name)
+    console.log('modifiedCityData', modifiedCityData)
+    console.log('city.name', city.visited)
+
+    // if (modifiedCityData) {
+    //   if (modifiedCityData.prevVisitedValue === selectedVisitedValue)
+    //     modifiedMapClone.delete(city.name)
+    // } else {
+    //   modifiedMapClone.set(city.name, { prevVisitedValue: city.visited, city })
+    //   modifiedMapClone.get(city.name).city.visited = selectedVisitedValue
+    // }
+    if (!modifiedCityData) {
+      modifiedMapClone.set(city.name, { prevVisitedValue: city.visited, city })
+      modifiedMapClone.get(city.name).city.visited = selectedVisitedValue
+    } else if (modifiedCityData.prevVisitedValue === selectedVisitedValue)
+      modifiedMapClone.delete(city.name)
+
     if (selectedVisitedValue === citiesVisitValues.visited.visitedValue) {
-      s.add(city.name)
-      console.log('added', s)
-      // const s = selectedVisitedValue
-      // setVisitedCitiesSet(set => {
-      //   console.log('set', set)
-      //   set.add(city.name)
-      // })
-    } else s.delete(city.name)
-    setVisitedCitiesSet(s)
-    // console.log(
-    //   'mmm',
-    //   visitedCitiesSet.size === s.size,
-    //   visitedCitiesSet.size,
-    //   s.size
-    // )
+      visitedSet.add(city.name)
+    } else {
+      visitedSet.delete(city.name)
+    }
+
+    setVisitedCitiesSet(visitedSet)
+    setModifiedCitiesMap(modifiedMapClone)
 
     let citiesClone = [...cities]
     // 2. Make a shallow copy of the item you want to mutate
@@ -160,40 +175,12 @@ function App() {
     hideLoginCard()
   }
 
-  const handleLogin = (isLoggedIn) => {
-    if (isLoggedIn) {
-      hideLoginCard()
-      setLoggedIn(true)
-    }
-    // const pw = e.target.value
-
-    // console.log('password', password)
-
-    // signin({ password }).then((res) => {
-    //   console.log('Login Successful')
-    //   hideLoginCard()
-    //   setLoggedIn(true)
-    // })
-
-    // const getPassword = async () => {
-    //   // const q = query(collection(db, 'users', 'Password'))
-    //   // getDoc(doc(db, 'cities', 'password')).then((d) => {
-    //   //   console.log('d', d)
-    //   // })
-    //   const q = query(collection(db, 'users'))
-    //   const querySnapshot = await getDocs(q)
-    //   // console.log('querySnapshot', querySnapshot)
-    //   querySnapshot.forEach((doc) => {
-    //     const pw = doc.data()
-    //     console.log('pw', pw.password)
-    //     if (password === pw.password) {
-    //       setLoggedIn(true)
-    //       hideLoginCard()
-    //     }
-    //   })
-    // }
-    // getPassword()
-  }
+  // const handleLogin = (isLoggedIn) => {
+  //   if (isLoggedIn) {
+  //     hideLoginCard()
+  //     setLoggedIn(true)
+  //   }
+  // }
 
   return (
     <AuthProvider>
@@ -239,8 +226,8 @@ function App() {
               </h3>
               <CitiesList
                 cities={cities}
-                onCityChange={handleCityChange}
                 visitedAmount={visitedCitiesSet?.size}
+                onCityChange={handleCityChange}
               />
               <Button
                 onClick={saveChanges}
@@ -296,7 +283,12 @@ function App() {
 
         {cities.length > 0 && (
           <section id='app__mapContainer' onClick={hideLoginCard}>
-            <PRMap cities={cities} />
+            <PRMap
+              cities={cities}
+              // originalCities={citiesOrig}
+              modifiedCitiesMap={modifiedCitiesMap}
+              setModifiedCitiesMap={setModifiedCitiesMap}
+            />
           </section>
         )}
         {/* </div> */}
