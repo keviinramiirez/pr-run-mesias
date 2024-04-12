@@ -82,7 +82,7 @@ const AuthProvider = ({ children }) => {
           })
           // isLoggedIn = true
           // console.log('signinFetch isLoggedIn', isLoggedIn)
-        }
+        } else logoutFetch()
         // return await bcrypt.compare(password, hashedPassword)
         // await bcrypt.compare(password, hashedPassword).then((res, isMatch) => {
         //   console.log('bcrypt res', res, isMatch)

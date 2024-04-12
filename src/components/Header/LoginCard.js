@@ -1,48 +1,31 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import './LoginCard.css'
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import Input from '@material-ui/core/Input'
+import TextField from '@material-ui/core/TextField'
+import InputAdornment from '@material-ui/core/InputAdornment'
+import IconButton from '@material-ui/core/IconButton'
+import VisibilityOff from '@material-ui/icons/VisibilityOff'
+import Visibility from '@material-ui/icons/Visibility'
 
-const LoginCard = ({ pw, loginCardDimensions, onPasswordChange, onLogin }) => {
-  // const [pw, setPw] = useState('')
-  // const { authState, fetchUserDataByToken } = useContext(AuthContext)
-  // const { userType } = authState;
-  // const { authState, signin } = useContext(AuthContext)
-  // const { password } = authState
+const LoginCard = ({
+  pw = '',
+  loginCardDimensions,
+  onPasswordChange,
+  onLogin,
+  isButtonDisabled,
+}) => {
+  const [showPassword, setShowPassword] = useState(false)
 
-  // console.log('LoginCard authState.password', password)
-
-  // const handleLogin = () => {
-  //   signin(pw)
-  // }
+  const handleClickShowPassword = () => {
+    console.log('showPassword', showPassword)
+    setShowPassword(!showPassword)
+  }
 
   return (
-    // <div
-    //   className='loginCard'
-    //   // style={{ top: cardDimensions.top + 'px', left: cardDimensions.left + 'px', width: '60px' }}
-    //   // style={{ top: cardDimensions.top + 'px', left: '-115px', width: '140px' }}
-    //   style={{
-    //     top: loginCardDimensions.top + 'px',
-    //     right: loginCardDimensions.right + 'px',
-    //   }}
-    //   onClick={onHideCard}
-    // >
-    //   <div className='card'>
-    //     <span>Mesias Login</span>
-    //     <section>
-    //       <div className='cardItemContainer'>
-    //         <div className='cardItem user-select-none'>
-    //           <small>
-    //             <b>{'QUe Hay'}</b>
-    //           </small>
-    //         </div>
-    //       </div>
-    //     </section>
-    //   </div>
-    // </div>
     <Card
       className='loginCard'
       variant='outlined'
@@ -56,18 +39,56 @@ const LoginCard = ({ pw, loginCardDimensions, onPasswordChange, onLogin }) => {
           Mesias Login
         </Typography>
         <div style={{ marginTop: '2em' }}>
-          <Input
+          <TextField
+            fullWidth
+            onChange={onPasswordChange}
+            placeholder='Contraseña'
+            // type='password'
+            type={`${showPassword ? '' : 'password'}`}
+            color='primary'
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position='end'>
+                  <IconButton
+                    aria-label='toggle password visibility'
+                    onClick={handleClickShowPassword}
+                    edge='end'
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+          {/* <Input
             fullWidth
             placeholder='Contraseña'
             color='primary'
             onChange={onPasswordChange}
-          />
+            type='password'
+            inputProps={{
+              endAdornment: (
+                <InputAdornment position='end'>
+                  <IconButton
+                    aria-label='toggle password visibility'
+                    onClick={handleClickShowPassword}
+                    edge='end'
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          /> */}
+
           <Button
             fullWidth
             style={{ marginTop: '1em' }}
             onClick={onLogin}
             variant='contained'
             color='primary'
+            disabled={isButtonDisabled}
+            // className={`${pw?.length > 0 ? '' : 'disableButton'}`}
           >
             Login
           </Button>

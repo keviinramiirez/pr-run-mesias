@@ -4,6 +4,7 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle'
 import './Header.css'
 import LoginCard from './LoginCard'
 import ExitToApp from '@material-ui/icons/ExitToApp'
+import { FaInstagram } from 'react-icons/fa'
 
 const Header = ({
   iconEl,
@@ -14,6 +15,7 @@ const Header = ({
   onLogout,
 }) => {
   const [pw, setPw] = useState('')
+  // const [disableButton, setDisableButton] = useState(true)
   const { authState, signin, logout, fetchUserDataByToken } =
     useContext(AuthContext)
   const { password } = authState
@@ -30,6 +32,15 @@ const Header = ({
     }
     // else console.log('useEffect NOPE')
   }, [password])
+
+  useEffect(() => {
+    console.log('useEffect password', password)
+    if (password?.length > 0) {
+      console.log('useEffect isLoggedIn')
+      handleLoginCard(true)
+    }
+    // else console.log('useEffect NOPE')
+  }, [pw])
 
   const handleLogin = () => {
     // const loginSuccess = signin(password)
@@ -48,12 +59,18 @@ const Header = ({
     onLogout()
   }
 
+  const handleInsta = () => {
+    window.open('https://www.instagram.com/elmesias_delaspesas/')
+    // window.open(window.location.origin + "/ROUTE_U_WANT", '_blank', 'toolbar=0,location=0,menubar=0');
+  }
+
   return (
     <div>
       <div className='header'>
         <p style={{ color: '#f5f6fa', pointer: 'none', userSelect: 'none' }}>
           _
         </p>
+        {/* <FaInstagram onClick={handleInsta} /> */}
 
         {!isLoggedIn && (
           <div className='header__icon'>
@@ -85,6 +102,7 @@ const Header = ({
           onLogin={handleLogin}
           onHideLoginCard={onHideLoginCard}
           onPasswordChange={(e) => setPw(e.target.value)}
+          isButtonDisabled={pw?.length === 0}
         />
       )}
     </div>

@@ -41,3 +41,7 @@
 /* .loginCard > .card > .cardItemContainer > .cardItem > svg {
   margin-right: 8px;
 } */
+
+.disableButton {
+  display: none;
+}

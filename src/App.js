@@ -22,7 +22,7 @@ import {
   setDoc,
   doc,
 } from 'firebase/firestore'
-// import { FaInstagram } from 'react-icons/fa'
+import { FaInstagram } from 'react-icons/fa'
 import PRMap from './components/Map/PRMap'
 import Table from './Table'
 import CitiesList from './components/CitiesList/CitiesList'
@@ -160,11 +160,6 @@ function App() {
     hideLoginCard()
   }
 
-  const handleInsta = () => {
-    window.open('https://www.instagram.com/elmesias_delaspesas/')
-    // window.open(window.location.origin + "/ROUTE_U_WANT", '_blank', 'toolbar=0,location=0,menubar=0');
-  }
-
   const handleLogin = (isLoggedIn) => {
     if (isLoggedIn) {
       hideLoginCard()
@@ -216,6 +211,7 @@ function App() {
             loginCardDimensions={loginCardDimensions}
             onHideLoginCard={hideLoginCard}
           />
+
           {/* {Object.keys(loginCardDimensions).length > 0 && (
             <LoginCard
               loginCardDimensions={loginCardDimensions}
@@ -274,7 +270,6 @@ function App() {
                 <strong style={{ color: '#0050ef' }}>estiramiento</strong> y{' '}
                 <strong style={{ color: '#0050ef' }}>movilidad</strong>.
               </p>
-              {/* <FaInstagram onClick={handleInsta} /> */}
             </section>
             {cities.length > 0 && (
               <section
