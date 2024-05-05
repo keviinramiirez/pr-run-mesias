@@ -38,3 +38,35 @@
 .util__cityInfoContainer {
   width: 150px;
 }
+
+.util__cityInfoContainer > div {
+  margin-top: 5px;
+}
+
+.util__dateInfo {
+  display: flex;
+}
+.util__dateInfo > strong {
+  padding-right: 5px;
+}
+
+.pulsing-circle {
+  /* border-radius: 50%;
+  width: 150px;
+  height: 150px;
+  position: absolute;
+  opacity: 0;
+  border: solid #0050ef 3px;
+  background: #0050ef44; */
+
+  animation: scaleIn 2s infinite cubic-bezier(0.36, 0.11, 0.89, 0.32);
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0.5;
+  }
+  to {
+    opacity: 0.1;
+  }
+}

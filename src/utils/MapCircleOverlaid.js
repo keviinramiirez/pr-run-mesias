@@ -1,16 +1,22 @@
 import { citiesVisitValues } from './util'
 import { Circle } from 'react-leaflet'
+import './utils.css'
+import { useEffect } from 'react'
 
-const MapCirclesOverlaid = ({ city, hexColor, radius, modifiedCitiesMap }) => {
+const MapCircleOverlaid = ({ city, hexColor, radius, modifiedCitiesMap }) => {
   // console.log(
   //   'MapCirclesOverlaid:modifiedCitiesMap',
   //   modifiedCitiesMap,
   //   city.visited === citiesVisitValues['tovisit'].visitedValue
   // )
 
+  // useEffect(() => {
+
+  // }, modifiedCitiesMap)
+
   return (
     <>
-      {city.visited === citiesVisitValues['tovisit'].visitedValue && (
+      {city?.visited === citiesVisitValues['tovisit'].visitedValue && (
         <>
           <Circle
             center={[city.lat, city.long]}
@@ -19,7 +25,7 @@ const MapCirclesOverlaid = ({ city, hexColor, radius, modifiedCitiesMap }) => {
             fillOpacity={0.4}
             radius={radius + 4000}
             // className={`${city.visited === 2 ? 'pulsing-circle' : ''}`}
-            className='pulsing-circle'
+            // className='pulsing-circle'
           />
           <Circle
             center={[city.lat, city.long]}
@@ -31,7 +37,7 @@ const MapCirclesOverlaid = ({ city, hexColor, radius, modifiedCitiesMap }) => {
           />
         </>
       )}
-      {city.visited === citiesVisitValues['visited'].visitedValue && (
+      {city.visited === citiesVisitValues.visited.visitedValue && (
         <Circle
           center={[city.lat, city.long]}
           color={hexColor}
@@ -41,7 +47,7 @@ const MapCirclesOverlaid = ({ city, hexColor, radius, modifiedCitiesMap }) => {
           className={'util__Green'}
         />
       )}
-      {city.visited === citiesVisitValues['notvisited'].visitedValue && (
+      {city.visited === citiesVisitValues.notVisited.visitedValue && (
         <Circle
           center={[city.lat, city.long]}
           color={hexColor}
@@ -55,4 +61,4 @@ const MapCirclesOverlaid = ({ city, hexColor, radius, modifiedCitiesMap }) => {
   )
 }
 
-export default MapCirclesOverlaid
+export default MapCircleOverlaid

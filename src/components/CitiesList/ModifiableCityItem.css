@@ -1,0 +1,58 @@
+.modifiableCityItem {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  height: 30px !important;
+  touch-action: none;
+  height: 50px !important;
+  width: 82% !important;
+  padding-right: 0px !important;
+  margin-left: 10px !important;
+}
+
+.modifiableCityItem > .modifiableCityItem__labels {
+  width: 50%;
+  padding-left: 10px;
+}
+
+.modifiableCityItem__labels > p {
+  font-size: 0.9em;
+}
+.modifiableCityItem__labels > span {
+  position: absolute;
+  top: 6px;
+  font-size: 0.4em;
+  color: #919191;
+}
+
+span.modifiableCityItem__dateLabel {
+  padding-left: 1px;
+}
+
+span.modifiableCityItem__hourLabel {
+  padding-left: 5em;
+}
+
+.modifiableCityItem > .MuiFormControl-root > .MuiInputBase-root {
+  height: 30px !important;
+  padding-right: 0px;
+}
+
+.modifiableCityItem__date {
+  width: 300px !important;
+}
+
+/* .modifiableCityItem ::-webkit-scrollbar {
+  width: 20px;
+}
+.modifiableCityItem ::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+.modifiableCityItem ::-webkit-scrollbar-thumb {
+  background: #888;
+}
+.modifiableCityItem ::-webkit-scrollbar-thumb:hover {
+  background: #555;
+} */

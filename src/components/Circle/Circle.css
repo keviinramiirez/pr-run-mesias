@@ -20,22 +20,20 @@
 }
 
 .circle__pulsingAnimation {
-  /* border-radius: 50%; */
-  /* width: 150px;
-  height: 150px; */
   position: absolute;
-  /* opacity: 0; */
   border: solid #0050ef 3px;
   background: #0050ef44;
 
-  /* width: 15px !important; */
-  /* height: 15px !important; */
   border-radius: 50%;
 
   animation: scaleIn 2s infinite cubic-bezier(0.36, 0.11, 0.89, 0.32);
 }
 
-div.MuiSelect-root > div.circle {
+/* div.MuiSelect-root > div.circle {
+  display: none !important;
+} */
+
+div.MuiSelect-root > span {
   display: none !important;
 }
 

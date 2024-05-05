@@ -36,19 +36,16 @@ body {
 .app__cityColumns {
   display: flex;
   /* width: 90%; */
+  color: #00a04b;
 }
 
 .app__visitedCitiesList {
-  margin-bottom: 20px;
+  margin-top: 10px !important;
 }
 
-.MuiFormControl-root {
+/* .MuiFormControl-root {
   width: 50%;
-}
-
-.MuiButtonBase-root > span {
-  margin-left: 10px;
-}
+} */
 
 .MuiPaper-root.MuiCard-root {
   overflow: hidden !important;
@@ -70,28 +67,31 @@ body {
   cursor: pointer;
 }
 
-.app__mapContainer {
-  background-color: rgb(163, 214, 229);
-}
-#app__mapContainer {
-  background-color: rgb(163, 214, 229);
-}
-
 h2 > span {
   color: #ed0000 !important;
 }
 
-.app__cityListCard {
-  overflow: hidden !important;
-}
+/* .app__tables {
+  display: flex;
+  justify-content: space-between;
+  width: 800px;
+} */
 
 .app__citiesList {
   margin-bottom: 20px;
 }
 
 .app__citiesList > .MuiButtonBase-root.MuiButton-root,
-.app__visitedCitiesList {
+.app__visitedCitiesList,
+.app__toVisitCitiesList {
   max-width: 400px !important;
+}
+
+.app__mapContainer {
+  background-color: rgb(163, 214, 229);
+}
+#app__mapContainer {
+  background-color: rgb(163, 214, 229);
 }
 
 .circle-zoom {
@@ -126,6 +126,15 @@ h2 > span {
   opacity: 0.3;
 } */
 
+.circle__pulsingAnimation {
+  position: absolute;
+  border: solid #0050ef 3px;
+  background: #0050ef44;
+
+  border-radius: 50%;
+
+  animation: scaleIn 2s infinite cubic-bezier(0.36, 0.11, 0.89, 0.32);
+}
 .pulsing-circle {
   /* border-radius: 50%; */
   /* width: 150px;
@@ -158,5 +167,17 @@ h2 > span {
 @media (max-width: 990px) {
   .app {
     flex-direction: column;
+  }
+}
+
+@media (min-width: 820px) {
+  .app__tables {
+    display: flex;
+    justify-content: space-between;
+    width: 800px;
+  }
+
+  .app__visitedCitiesList {
+    margin: 0px auto 20px !important;
   }
 }

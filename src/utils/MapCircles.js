@@ -1,98 +1,64 @@
-import { useEffect, useState } from 'react'
 import { Circle, Popup } from 'react-leaflet'
 import { citiesVisitValues } from './util'
+import {
+  beautifyDate,
+  beautifyDateHour,
+  get12HourFormatOfDate,
+} from '../services/dateServices'
 import MapCircleOverlaid from './MapCircleOverlaid'
 import './utils.css'
 
-const MapCircles = ({
-  cities,
-  originalCities,
-  modifiedCitiesMap,
-  setModifiedCitiesMap,
-}) => {
-  // const [modifiedHex, setModifiedHex] = useState(
-  //   citiesVisitValues['notvisited'].hex
-  // )
+const MapCircles = ({ cities, modifiedMapClone, modifiedCitiesMap }) => {
+  // const [radius, setRadius] = useState(2000)
 
-  useEffect(() => {
-    console.log('MapCircles useEffect', modifiedCitiesMap)
-  }, [modifiedCitiesMap])
+  // useEffect(() => {
+  //   console.log('MapCircles useEffect', modifiedCitiesMap)
+  //   if (city.visited === citiesVisitValues['tovisit'].visitedValue) {
+  //     setRadius(radius)
+  //   }
+  // }, [modifiedCitiesMap])
 
   const showThem = () =>
     cities.map((city) => {
+      if (!city) return <></>
       // console.log('city:', )
-      let radius = String(city.name).includes('edell') ? 50000 : 2000
-      let hexColor = citiesVisitValues['notvisited'].hex
+      let rad = String(city.name).includes('edell') ? 50000 : 2000
+      let hexColor = citiesVisitValues.notVisited.hex
 
-      if (city.visited === citiesVisitValues['visited'].visitedValue)
-        hexColor = citiesVisitValues['visited'].hex
-      else if (city.visited === citiesVisitValues['tovisit'].visitedValue) {
+      if (city.visited === citiesVisitValues.visited.visitedValue)
+        hexColor = citiesVisitValues.visited.hex
+      else if (city.visited === citiesVisitValues.tovisit.visitedValue) {
         // console.log('blue city is', city.name)
-        hexColor = citiesVisitValues['tovisit'].hex
-        radius = citiesVisitValues['tovisit'].radius
+        hexColor = citiesVisitValues.tovisit.hex
+        rad = citiesVisitValues.tovisit.radius
       }
+      // setRadius(rad)
 
       // undefined if city is not being modified
       let modifiedMapData = modifiedCitiesMap.get(city.name)
-      // console.log('modifiedMapData', modifiedMapData)
-      // if (
-      //   modifiedMapData &&
-      //   modifiedMapData.prevVisitedValue === city.visited
-      // ) {
-      //   modifiedCity = undefined
-      // }
 
-      // if (modifiedCity) {
-      //   console.log('originalCities', originalCities)
-      //   const originalCityToModify = originalCities.find(
-      //     (c) => c.name === modifiedCity.name
-      //   )
-      //   console.log('modifiedCity', modifiedCity)
-      //   console.log('originalCityToModify', originalCityToModify)
-      //   if (modifiedCity.visited === originalCityToModify.visited)
-      //     modifiedCity = undefined
-      //   else {
-      //     console.log()
-      //     console.log('Modifying hexColor')
-      //     console.log('modifiedCity.visited', modifiedCity.visited)
-      //     console.log(
-      //       'originalCityToModify.visited',
-      //       originalCityToModify.visited
-      //     )
-      //     hexColor = citiesVisitValues['notvisited'].hex
-
-      //     if (
-      //       modifiedCity.visited === citiesVisitValues['visited'].visitedValue
-      //     )
-      //       hexColor = citiesVisitValues['visited'].hex
-      //     else if (
-      //       modifiedCity.visited === citiesVisitValues['tovisit'].visitedValue
-      //     ) {
-      //       // console.log('blue city is', city.name)
-      //       hexColor = citiesVisitValues['tovisit'].hex
-      //       radius = citiesVisitValues['tovisit'].radius
-      //     }
-      //   }
-      // }
-
-      // if (city.visited === 1) setHexColor(citiesVisitValues['visited'].hex)
-      // else if (city.visited > 1) {
-      //   console.log('blue city is', city.name)
-      //   setHexColor(citiesVisitValues['tovisit'].hex)
-      //   radius = citiesVisitValues['tovisit'].radius
-      // }
-
-      // if (city.visited >= 0) return null
+      // if (city.visited === citiesVisitValues['tovisit'].visitedValue)
+      //   console.log('city.visited', city)
 
       return (
-        <div>
+        <div key={city.name}>
           <Circle
             center={[city.lat, city.long]}
             color={hexColor}
             fillColor={hexColor}
             fillOpacity={0.4}
-            radius={radius}
-            // className={`${city.visited < 0 ? 'circle-zoom' : ''}`}
+            radius={
+              rad
+              // + (city.visited === citiesVisitValues.tovisit.visitedValue
+              //   ? 2000
+              //   : 0)
+            }
+            key={city.name}
+            className={`${
+              city.visited === citiesVisitValues.tovisit.visitedValue
+                ? 'pulsing-circle'
+                : ''
+            }`}
           >
             <Popup>
               <div className='util__cityInfoContainer'>
@@ -100,34 +66,45 @@ const MapCircles = ({
                 <div className='util__circleContainer'>
                   <div
                     className={`util__circleWithBorder ${
-                      city.visited ===
-                      citiesVisitValues['notvisited'].visitedValue
+                      city.visited === citiesVisitValues.notVisited.visitedValue
                         ? 'util__Grey'
                         : city.visited ===
-                          citiesVisitValues['visited'].visitedValue
+                          citiesVisitValues.visited.visitedValue
                         ? 'util__Green'
                         : 'util__Blue'
                     }`}
                   ></div>
                   <div className='util__infoVisited'>
                     {city.visited ===
-                    citiesVisitValues['notvisited'].visitedValue ? (
+                    citiesVisitValues.notVisited.visitedValue ? (
                       <div>Aún por visitar</div>
                     ) : city.visited ===
-                      citiesVisitValues['visited'].visitedValue ? (
+                      citiesVisitValues.visited.visitedValue ? (
                       <div>Ya lo corrimos</div>
                     ) : (
                       <div>Próxima corrida</div>
                     )}
                   </div>
                 </div>
+                {city?.date && (
+                  <>
+                    <div className='util__dateInfo'>
+                      <strong>Día: </strong>
+                      <span>{beautifyDate(city.date)}</span>
+                    </div>
+                    <div className='util__dateInfo'>
+                      <strong>Hora: </strong>
+                      <span>{get12HourFormatOfDate(city.date)}</span>
+                    </div>
+                  </>
+                )}
               </div>
             </Popup>
             {modifiedMapData && (
               <MapCircleOverlaid
                 city={city}
                 hexColor={hexColor}
-                radius={radius}
+                radius={rad}
                 modifiedCitiesMap={modifiedCitiesMap}
               />
             )}

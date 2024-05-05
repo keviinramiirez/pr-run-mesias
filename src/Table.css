@@ -1,18 +1,41 @@
 .table {
   margin-top: 20px;
   overflow: scroll;
-  height: 400px;
   color: #6a5d5d;
+}
+
+.table.table__staticHeight {
+  height: 340px;
 }
 
 .table tr {
   display: flex;
   justify-content: space-between;
 }
-.table td {
-  padding: 0.5rem;
-}
+
+/* .table > tr > th {
+  width: 100%;
+  text-align: center;
+} */
 
 .table tr:nth-of-type(odd) {
   background-color: #f3f2f8;
+}
+
+.table > tr > td {
+  padding: 0.5rem;
+  /* width: 110px; */
+}
+
+.table > tr > td:nth-child(1) {
+  /* max-width: 120px; */
+  width: 120px;
+}
+
+.table > tr > td:nth-child(2) {
+  width: 80px;
+}
+
+.table > tr > td:nth-child(3) {
+  width: 70px;
 }

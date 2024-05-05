@@ -21,7 +21,6 @@ const AuthReducer = (state, action) => {
     }
     case types.LOGIN: {
       const { password } = payload
-      console.log('Reducer password', password)
       // if (password && exp)
       //   setLocalStorage({ token: password, exp }) // Local Storage
       setLocalStorage({ token: password, exp: 'to be defined' }) // Local Storage
@@ -47,7 +46,7 @@ const AuthReducer = (state, action) => {
       }
     }
     case types.RESET: {
-      console.log('payload', payload)
+      // console.log('payload', payload)
       return payload
     }
     default:

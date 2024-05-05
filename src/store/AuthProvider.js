@@ -34,7 +34,7 @@ const AuthProvider = ({ children }) => {
   const fetchUserDataByToken = async () => {
     const getUserData = async () => {
       const token = getToken()
-      console.log('fetchUserDataByToken token', token)
+      // console.log('fetchUserDataByToken token', token)
       if (!token) return
       // console.log('token', token)
 
@@ -47,7 +47,7 @@ const AuthProvider = ({ children }) => {
         // console.log('forEach hashedPassword', hashedPassword)
 
         if (token === hashedPassword) {
-          console.log('token === hashedPassword', true)
+          // console.log('token === hashedPassword', true)
           dispatchAuthAction({
             type: 'SET_USER',
             payload: { token },
@@ -59,7 +59,7 @@ const AuthProvider = ({ children }) => {
   }
 
   const signinFetch = async (password) => {
-    console.log('signinFetch', password)
+    // console.log('signinFetch', password)
 
     const signin = async () => {
       // const isLoggedIn = false
@@ -70,7 +70,6 @@ const AuthProvider = ({ children }) => {
       const q = query(collection(db, 'users'))
       const querySnapshot = await getDocs(q)
       // console.log('querySnapshot', querySnapshot)
-      console.log('querySnapshot', querySnapshot)
       querySnapshot.forEach(async (doc) => {
         const hashedPassword = doc.data().password
 
@@ -168,7 +167,6 @@ const AuthProvider = ({ children }) => {
     // })
     logoutStorage()
     resetState()
-    console.log('resetting state')
     // }
     // logout()
   }

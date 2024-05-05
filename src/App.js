@@ -1,59 +1,47 @@
 import './App.css'
 import 'leaflet/dist/leaflet.css'
-import React, { useRef, useEffect, useState, useContext } from 'react'
-import { auth, db } from './Firebase'
+import React, { useRef, useEffect, useState } from 'react'
+import { db } from './Firebase'
+import { Timestamp, deleteField, getDoc, updateDoc } from 'firebase/firestore'
+import { collection, query, getDocs, setDoc, doc } from 'firebase/firestore'
 import AuthProvider from './store/AuthProvider'
-import bcrypt from 'bcryptjs'
-import {
-  Card,
-  MenuItem,
-  Select,
-  InputLabel,
-  FormControl,
-  CardContent,
-  Button,
-} from '@material-ui/core'
-import {
-  collection,
-  query,
-  where,
-  getDocs,
-  getDoc,
-  setDoc,
-  doc,
-} from 'firebase/firestore'
+import { Button } from '@material-ui/core'
 import { FaInstagram } from 'react-icons/fa'
 import PRMap from './components/Map/PRMap'
-import Table from './Table'
-import CitiesList from './components/CitiesList/CitiesList'
+import ModifiableCities from './components/CitiesList/ModifiableCities'
 import Header from './components/Header/Header'
-import LoginCard from './components/Header/LoginCard'
-import { citiesVisitValues } from './utils/util'
-import VisitedCitiesList from './components/VisitedCitiesList/VisitedCitiesList'
+import {
+  citiesVisitValues,
+  sortCitiesByName,
+  sortCitiesByToVisit,
+  sortToVisitCitiesByDateTime,
+} from './utils/util'
+import VisitedCitiesList from './components/CitiesList/VisitedCitiesList'
+import ToVisitCitiesList from './components/CitiesList/ToVisitCitiesList'
 
 function App() {
   const [cities, setCities] = useState([])
-  // const [citiesOrig, setCitiesOrig] = useState([])
   const [visitedCities, setVisitedCities] = useState([])
+  // const [nModifiedVisitedCities, setNModifiedVisitedCities] = useState(0)
   const [visitedCitiesSet, setVisitedCitiesSet] = useState(new Set())
+
+  //
+  // const [editingCity, setEditingCity] = useState(false); // determines if a city is being modified
+  // const [cityToEdit, setCityToEdit] = useState(undefined); // the user with schedule to be modified
+
+  //
   const [modifiedCitiesMap, setModifiedCitiesMap] = useState(new Map())
   const [loginCardDimensions, setLoginCardDimensions] = useState({})
   const [loggedIn, setLoggedIn] = useState(false)
-  // const { signin } = useContext(AuthContext)
-  // const { authState, verifyPermission, signup, resetState } = useContext(AuthContext);
-  // const { userType } = authState;
-
-  // const [mapZoom, _] = useState(8)
-  // const [mapCenter, __] = useState({
-  //   lat: 18.200178,
-  //   lng: -66.464513,
-  // })
 
   const iconEl = useRef(null)
+  // SimpleDateFormat ISO_8601_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:sss'Z'");
+
+  // String now = ISO_8601_FORMAT.format(new Date());
 
   useEffect(() => {
-    // const hashedToken = bcrypt.hashSync('Millonario')
-    // setDoc(doc(db, 'users', 'password'), { password: hashedToken })
+    // const current_timestamp = Timestamp.fromDate(new Date())
+    // console.log('current_timestamp', current_timestamp)
 
     const visitedSet = new Set()
     const getCities = async () => {
@@ -61,7 +49,7 @@ function App() {
       const q = query(collection(db, 'cities'))
       const querySnapshot = await getDocs(q)
       let id = 1
-      const fetchedCities = []
+      let fetchedCities = []
       const visitedCities = []
       // console.log('querySnapshot', querySnapshot)
       querySnapshot.forEach((doc) => {
@@ -73,6 +61,7 @@ function App() {
           visitedSet.add(cityData.name)
         }
       })
+      fetchedCities = sortCitiesByToVisit(fetchedCities)
       // const citiesClone = [...fetchedCities]
       // console.log('citiesClone', citiesClone)
       setCities(fetchedCities)
@@ -84,13 +73,17 @@ function App() {
     getCities()
   }, [])
 
+  useEffect(() => {
+    // setCities(sortCitiesByToVisit())
+  }, [cities])
+
   const hideLoginCard = () => {
     setLoginCardDimensions({})
   }
 
   const handleLoginCard = (loggedInSuccesfully = false) => {
     const isAlreadyOpen = Object.keys(loginCardDimensions).length > 0
-    console.log('handleLoginCard', isAlreadyOpen, loggedInSuccesfully)
+    // console.log('handleLoginCard', isAlreadyOpen, loggedInSuccesfully)
 
     if (isAlreadyOpen || loggedInSuccesfully) {
       hideLoginCard()
@@ -104,45 +97,60 @@ function App() {
     }
   }
 
-  const saveChanges = () => {
-    const visitedSet = new Set()
-    // const visitedCities = []
-    cities.forEach((city) => {
-      setDoc(doc(db, 'cities', city.name), city).then(() => {
-        if (city.visited === citiesVisitValues.visited.visitedValue) {
-          visitedCities.push(city)
-          // visitedSet.add(city)
-        }
+  const saveChanges = (modifiedCity) => {
+    // console.log('-modifiedCity', modifiedCity)
+    // if (modifiedCity.visited === 0) {
+    //   updateDoc(doc(db, 'cities', modifiedCity.name), {
+    //     date: deleteField(),
+    //   })
+    // }
+    // else
+    if (
+      modifiedCity.visited === 0 ||
+      (modifiedCity.visited > 0 && modifiedCity.date === undefined)
+    ) {
+      updateDoc(doc(db, 'cities', modifiedCity.name), {
+        date: deleteField(),
       })
+    }
+    // else {
+    setDoc(doc(db, 'cities', modifiedCity.name), modifiedCity).then(() => {
+      // console.log('c', modifiedCity)
+      const visitedCitiesClone = [...visitedCities]
+      if (modifiedCity.visited === citiesVisitValues.visited.visitedValue) {
+        visitedCitiesClone.push(modifiedCity)
+        // visitedSet.add(city)
+      } else {
+        const toModifyIndex = visitedCities.findIndex(
+          (c) => c.name === modifiedCity.name
+        )
+        visitedCitiesClone.splice(toModifyIndex, 1)
+        // console.log('spliced',visitedCities.findIndex((c) => c.name === modifiedCity.name))
+      }
+      // console.log(visitedCities)
+      setVisitedCities(sortCitiesByName(visitedCitiesClone))
     })
-    console.log('visitedSet', visitedSet)
-    setVisitedCities(visitedCities)
-    // setVisitedCitiesSet(visitedSet)
+    // }
+    handleCityUIChanges(modifiedCity)
+
+    // 3. Put it back into our array. N.B. we *are* mutating the array here,
+    //    but that's why we made a copy first
+    // visitedCitiesClone[toModifyIndex] = cityToDelete
+
+    // setCities(sortCitiesByToVisit(cities))
   }
 
-  const handleCityChange = async (e, city) => {
-    const selectedVisitedValue = e.target.value
-    console.log('selectedVisitedValue', selectedVisitedValue)
+  const handleCityUIChanges = (city) => {
+    // const selectedVisitedValue = e.target.value
+    const selectedVisitedValue = city.visited
+    // console.log('selectedVisitedValue', selectedVisitedValue)
     const toModifyIndex = cities.findIndex((c) => c.id === city.id)
-    // console.log(
-    //   'handleCityCha selectedVisitedValue',
-    //   toModifyIndex,
-    //   selectedVisitedValue
-    // )
 
     const visitedSet = new Set(visitedCitiesSet)
     const modifiedMapClone = new Map(modifiedCitiesMap)
     let modifiedCityData = modifiedMapClone.get(city.name)
-    console.log('modifiedCityData', modifiedCityData)
-    console.log('city.name', city.visited)
 
-    // if (modifiedCityData) {
-    //   if (modifiedCityData.prevVisitedValue === selectedVisitedValue)
-    //     modifiedMapClone.delete(city.name)
-    // } else {
-    //   modifiedMapClone.set(city.name, { prevVisitedValue: city.visited, city })
-    //   modifiedMapClone.get(city.name).city.visited = selectedVisitedValue
-    // }
+    // original
     if (!modifiedCityData) {
       modifiedMapClone.set(city.name, { prevVisitedValue: city.visited, city })
       modifiedMapClone.get(city.name).city.visited = selectedVisitedValue
@@ -154,6 +162,31 @@ function App() {
     } else {
       visitedSet.delete(city.name)
     }
+
+    // console.log('modifiedCityData', modifiedCityData)
+    // console.log('modifiedMapClone', modifiedMapClone)
+
+    // // IF it hasn't been modified before
+    // if (!modifiedCityData) {
+    //   modifiedMapClone.set(city.name, { prevVisitedValue: city.visited, city })
+    //   modifiedMapClone.get(city.name).city.visited = selectedVisitedValue
+    //   // if (selectedVisitedValue === citiesVisitValues.notVisited.visitedValue) {
+    //   //   setNModifiedVisitedCities(nModifiedVisitedCities - 1)
+    //   // }
+    // } else if (modifiedCityData.prevVisitedValue === selectedVisitedValue) {
+    //   modifiedMapClone.delete(city.name)
+    //   setNModifiedVisitedCities(nModifiedVisitedCities - 1)
+    // }
+
+    // if (selectedVisitedValue === citiesVisitValues.visited.visitedValue) {
+    //   visitedSet.add(city.name)
+    //   setNModifiedVisitedCities(nModifiedVisitedCities + 1)
+    // }
+    // else {
+    //   visitedSet.delete(city.name)
+    //   if (selectedVisitedValue === citiesVisitValues.notVisited.visitedValue)
+    //     setNModifiedVisitedCities(nModifiedVisitedCities - 1)
+    // }
 
     setVisitedCitiesSet(visitedSet)
     setModifiedCitiesMap(modifiedMapClone)
@@ -167,7 +200,15 @@ function App() {
     //    but that's why we made a copy first
     citiesClone[toModifyIndex] = cityToModify
     // 5. Set the state to our new copy
-    setCities(citiesClone)
+    setCities(sortCitiesByToVisit(sortCitiesByName(citiesClone)))
+  }
+
+  const logg = () => {
+    console.log('modifiedCitiesMap', modifiedCitiesMap)
+    console.log(
+      'modifiedCityData ^ .get(name)',
+      modifiedCitiesMap.get('Maunabo')
+    )
   }
 
   const handleLogout = () => {
@@ -181,6 +222,23 @@ function App() {
   //     setLoggedIn(true)
   //   }
   // }
+
+  // const openCityEdit = (city) => {
+  //   // console.log('city', city)
+  //   setCityToEdit(user);
+  //   setEditingCity(true);
+  // };
+
+  // const closeScheduleEdit = () => {
+  //   setCityToEdit(undefined);
+  //   setEditingCity(false);
+  // };
+
+  // const saveCityData = (emp) => {
+  //   console.log('emp', emp)
+  //   setEditingCity(false);
+  //   setCityToEdit(emp);
+  // };
 
   return (
     <AuthProvider>
@@ -210,26 +268,32 @@ function App() {
         {/* <div onClick={hideLoginCard}> */}
 
         {loggedIn && (
-          <>
-            {/* <section className='app__welcome' onClick={hideLoginCard}>
-              <h2 style={{ paddingBottom: '10px' }}>
-                BIENVENIDO MILLONARIO <span>MESIAS</span>
-              </h2>
-            </section> */}
-            <section className='app__citiesList' onClick={hideLoginCard}>
-              <h3>
+          <section className='app__tables'>
+            <div className='app__citiesList' onClick={hideLoginCard}>
+              {/* <Button
+                onClick={logg}
+                fullWidth
+                color='secondary'
+                variant='contained'
+              >
+                Console Log Modifiable Data
+              </Button> */}
+              {/* <h3>
                 Ya corrimos en{' '}
                 <span style={{ color: '#0050ef' }}>
-                  {visitedCitiesSet?.size}
+                  {visitedCitiesSet?.size - nModifiedVisitedCities}
                 </span>{' '}
                 ciudades
-              </h3>
-              <CitiesList
+              </h3> */}
+              <ModifiableCities
                 cities={cities}
+                // visitedCities={visitedCities}
                 visitedAmount={visitedCitiesSet?.size}
-                onCityChange={handleCityChange}
+                onCityChange={handleCityUIChanges}
+                // onOpenScheduleEdit={openScheduleEdit}
+                onSaveCityChanges={(city) => saveChanges(city)}
               />
-              <Button
+              {/* <Button
                 onClick={saveChanges}
                 fullWidth
                 color='primary'
@@ -237,9 +301,15 @@ function App() {
                 style={{ marginTop: '10px' }}
               >
                 Guardar Cambios
-              </Button>
-            </section>
-          </>
+              </Button> */}
+            </div>
+            <div className='app__visitedCitiesList' onClick={hideLoginCard}>
+              <VisitedCitiesList
+                cities={visitedCities}
+                visitedAmount={visitedCitiesSet?.size}
+              />
+            </div>
+          </section>
         )}
         {!loggedIn && (
           <>
@@ -258,39 +328,35 @@ function App() {
                 <strong style={{ color: '#0050ef' }}>movilidad</strong>.
               </p>
             </section>
-            {cities.length > 0 && (
-              <section
-                className='app__visitedCitiesList'
-                onClick={hideLoginCard}
-              >
-                <VisitedCitiesList cities={visitedCities} />
-                {/* <Card className='app__cityListCard'>
-                  <CardContent>
-                    <h3>
-                      Ya corrimos en{' '}
-                      <span style={{ color: '#0050ef' }}>
-                        {visitedCities.length}
-                      </span>{' '}
-                      ciudades
-                    </h3>
-                    <Table cities={cities} />
-                  </CardContent>
-                </Card> */}
-              </section>
-            )}
+
+            {/* {cities.length > 0 && ( */}
+            <section className='app__toVisitCitiesList' onClick={hideLoginCard}>
+              <ToVisitCitiesList
+                cities={cities}
+                visitedCitiesSet={visitedCitiesSet}
+                // nModifiedVisitedCities={nModifiedVisitedCities}
+              />
+            </section>
+            {/* )} */}
           </>
         )}
 
-        {cities.length > 0 && (
-          <section id='app__mapContainer' onClick={hideLoginCard}>
-            <PRMap
-              cities={cities}
-              // originalCities={citiesOrig}
-              modifiedCitiesMap={modifiedCitiesMap}
-              setModifiedCitiesMap={setModifiedCitiesMap}
-            />
-          </section>
+        {cities?.length > 0 && (
+          <>
+            {/* <section className='app__visitedCitiesList' onClick={hideLoginCard}>
+              <VisitedCitiesList cities={visitedCities} />
+            </section> */}
+            <section id='app__mapContainer' onClick={hideLoginCard}>
+              <PRMap
+                cities={cities}
+                // originalCities={citiesOrig}
+                modifiedCitiesMap={modifiedCitiesMap}
+                setModifiedCitiesMap={setModifiedCitiesMap}
+              />
+            </section>
+          </>
         )}
+
         {/* </div> */}
       </div>
     </AuthProvider>
@@ -299,53 +365,12 @@ function App() {
 
 export default App
 
-//<FormControl>
-// <InputLabel id='select-label'>Aún sin visitar</InputLabel>
-//<Select
-//   variant='outlined'
-//  onChange={handleUnvisitedCityChange}
-//   value={unvisitedCities[0]?.name}
-//  value={selectedCity}
-// >
-//   {unvisitedCities?.map((city) => {
-//     console.log('cccity', city)
-//     return (
-// {/* <div
-//       className={`util__circleWithBorder ${
-//         city.visited > 0 ? 'util__Green' : 'util__Grey'
-//        }`}
-//     ></div>
-//     <MenuItem value={city}>{city.name}</MenuItem> */}
-//     <div className=''>
-//     <MenuItem value={city}>
-//       {/* <div
-//            className={`util__circleWithBorder ${
-//              city.visited > 0 ? 'util__Green' : 'util__Grey'
-//            }`}
-//          ></div> */}
-//      <Circle visited={city.visited}></Circle>
-//</MenuItem>      <span>{city.name}</span>
-//</Select>    </MenuItem>
-//      </div>
-//    )
-//  })}
-//</Select>
-//</FormControl>
-//<button
-// onClick={addSelectedCity}
-// className={`app__addButton ${
-//   !selectedCity ? 'app__addButtonDisabled' : ''
-// }`}
-//>
-// Add
-//</button>
-
 //<section>
 //      <FormControl>
 //      <InputLabel id='select-label'>Aún sin visitar</InputLabel>
 //    <Select
 //    variant='outlined'
-//  onCityChange={handleCityChange}
+//  onCityChange={handleCityUIChanges}
 //            value={unvisitedCities[0]?.name}
 //            // value={selectedCity}
 //         >
@@ -357,33 +382,6 @@ export default App
 //     city.visited > 0 ? 'util__Green' : 'util__Grey'
 //   }`}
 // ></div>
-// <MenuItem value={city}>{city.name}</MenuItem> */}
-// <div className=''>
-//              <MenuItem value={city}>
-//                {/* <Fragment> */}
-//               {/* <div
-//                     className={`util__circleWithBorder ${
-//                       city.visited > 0 ? 'util__Green' : 'util__Grey'
-//                     }`}
-//                   ></div> */}
-//                 <Circle visited={city.visited}></Circle>
-//                 <span>{city.name}</span>
-//                 {/* </Fragment> */}
-//               </MenuItem>
-// </div>
-//             )
-//           })}
-//         </Select>
-//       </FormControl>
-//   <button
-//     onClick={handleAddSelectedCity}
-//     className={`app__addButton ${
-//       !selectedCity ? 'app__addButtonDisabled' : ''
-//     }`}
-//   >
-//     Add
-//   </button>
-// </section>
 
 // const handleAddSelectedCity = () => {
 //   if (!selectedCity) return
@@ -408,10 +406,6 @@ export default App
 //   setUnvisitedCities(unvisitedCitiesClone)
 // }
 
-// const handleCityChange = async (e) => setSelectedCity(e.target.value)
-
-// const getCityPos = (id) => cities.findIndex((city) => city.id === id)
-
 // const handleDragEnd = (e) => {
 //   const { active, over } = e
 //   console.log('e', active, over)
@@ -425,10 +419,3 @@ export default App
 //     return arrayMove(cities, originalPos, newPos)
 //   })
 // }
-
-// const sensors = useSensors(
-//   useSensor(PointerSensor),
-//   useSensor(KeyboardSensor, {
-//     coordinateGetter: sortableKeyboardCoordinates,
-//   })
-// )

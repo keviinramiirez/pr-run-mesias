@@ -3,7 +3,6 @@
 
 export const setLocalStorage = ({ token, exp }) => {
   // const expiresIn = moment().add(exp, 'days')
-  console.log('<token>', token)
 
   // const hashedToken = bcrypt.hash(token)
   localStorage.setItem('token', token)

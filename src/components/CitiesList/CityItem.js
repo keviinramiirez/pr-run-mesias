@@ -2,33 +2,29 @@
 // import { CSS } from '@dnd-kit/utilities'
 import './CityItem.css'
 import Circle from '../Circle/Circle'
-import { MenuItem, Select, InputLabel, FormControl } from '@material-ui/core'
-import { useState } from 'react'
+import {
+  MenuItem,
+  Select,
+  TextField,
+  InputLabel,
+  InputLabelProps,
+  FormControl,
+} from '@material-ui/core'
+import { visitedValues } from '../../utils/util'
 
 const CityItem = ({ city, onCityChange }) => {
-  // const { attributes, listeners, setNodeRef, transform, transition } =
-  //   useSortable(id)
-
-  // const style = {
-  //   transition,
-  //   transform: CSS.Transform.toString(transform),
-  // }
-
-  const visitedValues = ['Aún por visitar', 'Ya lo corrimos', 'Próxima corrida']
+  // const visitedValues = ['Aún por visitar', 'Ya lo corrimos', 'Próxima corrida']
   // const [selectedVisitedValue, setSelectedVisitedValue] = useState(city)
 
   return (
-    <div
+    <li
       // ref={setNodeRef}
-      // style={style}
-      // {...attributes}
-      // {...listeners}
       className='cityItem'
     >
       {/* <input type='checkbox' className='checkbox' /> */}
       {/* {name} */}
       {/* <Circle visited={city.visited} /> */}
-      <Circle visited={city.visited} city={city.name}></Circle>
+      {/* <Circle visited={city.visited} city={city.name}></Circle> */}
       <span style={{ width: '36%' }}>{city.name}</span>
       {/* <DeleteIcon color={'secondary'} onClick={() => onDeleteVisited(city)} /> */}
 
@@ -45,14 +41,31 @@ const CityItem = ({ city, onCityChange }) => {
             // console.log('bruh', visitedValue)
             return (
               <MenuItem value={i}>
-                <Circle visited={i} isHidden={city.id == i}></Circle>
+                {/* <Circle visited={i} isHidden={city.id == i} /> */}
+                <Circle visited={i} />
                 <span>{visitedValues[i]}</span>
               </MenuItem>
             )
           })}
         </Select>
       </FormControl>
-    </div>
+
+      {/* <FormControl>
+        <TextField
+          id='time'
+          label='Alarm clock'
+          type='time'
+          defaultValue='07:30'
+          className=''
+          // InputLabelProps={{
+          //   shrink: true,
+          // }}
+          inputProps={{
+            step: 300, // 5 min
+          }}
+        />
+      </FormControl> */}
+    </li>
   )
 }
 

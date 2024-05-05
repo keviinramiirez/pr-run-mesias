@@ -25,18 +25,14 @@ const Header = ({
   }, [])
 
   useEffect(() => {
-    console.log('useEffect password', password)
     if (password?.length > 0) {
-      console.log('useEffect isLoggedIn')
       handleLoginCard(true)
     }
     // else console.log('useEffect NOPE')
   }, [password])
 
   useEffect(() => {
-    console.log('useEffect password', password)
     if (password?.length > 0) {
-      console.log('useEffect isLoggedIn')
       handleLoginCard(true)
     }
     // else console.log('useEffect NOPE')

@@ -1,0 +1,57 @@
+.cityEdit {
+  margin: 20px;
+  max-height: 430px;
+  /* overflow: hidden auto; */
+}
+
+.cityEdit > .cityEdit__selectField {
+  display: flex;
+  align-items: center;
+}
+
+.cityEdit__selectField > h3 {
+  color: rgb(0, 80, 239);
+}
+
+/* .cityEdit {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  height: 30px !important;
+  padding: 20px;
+  height: 40px;
+  touch-action: none;
+  justify-content: space-around;
+} */
+
+.cityEdit__selectField > .MuiFormControl-root {
+  margin-left: 20px;
+}
+
+.cityEdit__selectField > .MuiFormControl-root > .MuiInputBase-root {
+  height: 40px !important;
+}
+
+.cityEdit__selectField > .MuiFormControl-root {
+  width: 70px;
+}
+
+.cityEdit > .cityEdit__checkbox {
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.cityEdit > .cityEdit__datetime {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.cityEdit__datetime > form > .MuiFormControl-root {
+  width: 210px;
+}

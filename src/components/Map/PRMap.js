@@ -4,12 +4,7 @@ import './PRMap.css'
 // import { showDataOnMap } from '../../utils/util'
 import MapCircles from '../../utils/MapCircles'
 
-function PRMap({
-  cities,
-  originalCities,
-  modifiedCitiesMap,
-  setModifiedCitiesMap,
-}) {
+function PRMap({ cities, modifiedCitiesMap, setModifiedCitiesMap }) {
   return (
     <div className='prmap'>
       <MapContainer

@@ -15,3 +15,7 @@
 .cityItem > .MuiFormControl-root > .MuiInputBase-root {
   height: 40px !important;
 }
+
+.cityItem > .MuiFormControl-root {
+  width: 70px;
+}
