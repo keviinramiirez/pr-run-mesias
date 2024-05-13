@@ -22,9 +22,9 @@ const firebaseConfig = {
 // const db = firebaseApp.firestore()
 // const auth = firebase.auth()
 
-const firebaseApp = initializeApp(firebaseConfig)
-const auth = getAuth(firebaseApp)
-const db = getFirestore(firebaseApp)
+const app = initializeApp(firebaseConfig)
+const auth = getAuth(app)
+const db = getFirestore(app)
 // const todosCol = collection(db, 'todos')
 
 // onAuthStateChanged(auth, user => {

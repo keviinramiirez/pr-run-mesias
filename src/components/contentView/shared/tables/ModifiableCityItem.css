@@ -1,0 +1,78 @@
+tr.modifiableTableItem {
+  display: flex;
+  align-items: center;
+  /* justify-content: space-between; */
+  /* height: 40px; */
+}
+
+/* tr.modifiableTableItem > .circle {
+
+} */
+
+/* .table > tr > th {
+  width: 100%;
+  text-align: center;
+} */
+
+/* tr.modifiableTable:nth-of-type(odd) {
+  background-color: #f3f2f8;
+} */
+
+tr.modifiableTableItem > td {
+  padding: 0.5rem;
+  /* width: 110px; */
+}
+
+td > .modifiableTableItem__dateContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* color: #001643; */
+}
+
+td > .modifiableTableItem__dateContent > p {
+  font-size: 0.8em;
+  font-weight: 500;
+}
+
+td > .modifiableTableItem__dateContent > span {
+  font-size: 0.7em;
+}
+
+td > .modifiableTableItem__button > .MuiButton-label {
+  font-size: 0.6em;
+}
+
+/* .modifiableTable > tr > td:nth-child(1) {
+  width: 120px;
+}
+
+.modifiableTable > tr > td:nth-child(2) {
+  width: 80px;
+}
+
+.modifiableTable > tr > td:nth-child(3) {
+  width: 70px;
+} */
+
+tr.modifiableTableItem > td {
+  padding: 0.5rem;
+}
+
+tr.modifiableTableItem > td:nth-child(1) {
+  width: 20px;
+}
+
+tr.modifiableTableItem > td:nth-child(2) {
+  width: 115px;
+  font-size: 0.85em;
+  /* font-weight: 500; */
+}
+
+tr.modifiableTableItem > td:nth-child(3) {
+  width: 80px;
+}
+
+tr.modifiableTableItem > td:nth-child(4) {
+  width: 140px;
+}

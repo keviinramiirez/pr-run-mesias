@@ -1,5 +1,5 @@
 import './ModifiableCityItem.css'
-import Circle from '../Circle/Circle'
+import Circle from '../../map/Circle'
 import {
   MenuItem,
   Select,
@@ -10,8 +10,8 @@ import {
   makeStyles,
   Button,
 } from '@material-ui/core'
-import { visitedValues } from '../../utils/util'
-import '../../App.css'
+import { visitedValues } from '../../../utils/util'
+import '../../../App.css'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import CreateIcon from '@material-ui/icons/Create'
@@ -19,9 +19,9 @@ import {
   beautifyDate,
   get12HourFormatOfDate,
   toISOYearFormat,
-} from '../../services/dateServices'
+} from '../../../services/dateServices'
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   container: {
     display: 'flex',
     flexWrap: 'wrap',
@@ -45,20 +45,14 @@ const ModifiableCityItem = ({ city, onCityChange, onOpenCityEdit }) => {
         <p style={{ paddingTop: `${city.date ? '4px' : '0'}` }}>{city.name}</p>
         {city.date && (
           <>
-            <span className='modifiableCityItem__dateLabel'>
-              {beautifyDate(city.date)},
-            </span>
+            <span className='modifiableCityItem__dateLabel'>{beautifyDate(city.date)},</span>
             <span className='modifiableCityItem__hourLabel'>
               {get12HourFormatOfDate(city.date)}
             </span>
           </>
         )}
       </div>
-      <Button
-        onClick={() => onOpenCityEdit(city)}
-        color='primary'
-        variant='outlined'
-      >
+      <Button onClick={() => onOpenCityEdit(city)} color='primary' variant='outlined'>
         Ver
       </Button>
       {/* <FormControl>

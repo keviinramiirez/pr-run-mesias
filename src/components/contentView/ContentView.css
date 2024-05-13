@@ -1,0 +1,21 @@
+.app__subscribedCityUsers {
+  margin-bottom: 20px;
+}
+
+.map__circleContainer {
+  position: relative;
+  /* top: 10px; */
+}
+
+#contentView__mapContainer {
+  background-color: rgb(163, 214, 229);
+}
+
+#contentView > hr {
+  /* margin: -1px auto 0; */
+  color: #d8d8d8;
+}
+
+#contentView > h4 > span {
+  color: #ed0000 !important;
+}

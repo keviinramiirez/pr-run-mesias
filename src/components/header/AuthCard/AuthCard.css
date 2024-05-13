@@ -1,0 +1,124 @@
+.authCard {
+  position: absolute;
+  width: 250px;
+  /* padding: 4px; */
+  z-index: 9999;
+  background-color: #fff;
+}
+
+.authCard > .authCard__content {
+  padding: 0;
+}
+
+.authCard__content > .authCard__tabs {
+  width: 100%;
+  height: 40px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  cursor: pointer;
+}
+
+.authCard__tabs > .authCard__tab {
+  display: grid;
+  align-items: center;
+  text-align: center;
+  width: 50%;
+  height: 100%;
+}
+
+.authCard__loginTab:hover {
+  background-color: #eee;
+}
+
+.authCard__registerTab:hover {
+  background-color: #eee;
+}
+
+/* .authCard__tabs > .authCard__registerTab {
+  width: 50%;
+} */
+
+.authCard__content > .authCard__loginFieldContainer,
+.authCard__content > .authCard__logoutProfileContent {
+  padding: 20px 20px 0 20px;
+}
+
+.authCard__logoutProfileContent > h5 {
+  text-align: center;
+}
+
+.authCard__logoutProfileContent > .authCard__logoutButton {
+  margin-top: 10px;
+}
+
+/* ////// */
+
+.authCard > .card {
+  padding-top: 8px;
+  /* padding: 8px 0 0; */
+}
+
+.authCard > .card > span {
+  padding-left: 12px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.authCard > .card > section {
+  /* height: 400px; */
+  max-height: 400px;
+  overflow: hidden auto;
+  margin: -1px;
+}
+
+.authCard > .card > section > .cardItemContainer > .cardItem {
+  font-size: 12px;
+  padding: 4px 0;
+  padding-left: 12px;
+  align-items: center;
+  /* border-top: 1px solid #d8d8d8; */
+  cursor: initial;
+}
+
+.authCard > .card > section > .cardItemContainer > .cardItem > p {
+  margin: 0;
+  /* display: inline; */
+}
+
+/* .authCard > .card > .cardItemContainer > .cardItem > svg {
+  margin-right: 8px;
+} */
+
+.disableButton {
+  display: none;
+}
+
+.tab button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+  font-size: 17px;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+  display: none;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-top: none;
+}

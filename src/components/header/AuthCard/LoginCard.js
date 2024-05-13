@@ -11,13 +11,7 @@ import IconButton from '@material-ui/core/IconButton'
 import VisibilityOff from '@material-ui/icons/VisibilityOff'
 import Visibility from '@material-ui/icons/Visibility'
 
-const LoginCard = ({
-  pw = '',
-  loginCardDimensions,
-  onPasswordChange,
-  onLogin,
-  isButtonDisabled,
-}) => {
+const LoginCard = ({ loginCardDimensions, onPasswordChange, onLogin, isButtonDisabled }) => {
   const [showPassword, setShowPassword] = useState(false)
 
   const handleClickShowPassword = () => {

@@ -1,0 +1,35 @@
+table.subscribedCityUsers > .MuiTableCell-body > .circle {
+  padding: 0;
+}
+
+.subscribedCityUsers > tr > td {
+  padding: 10px !important;
+}
+
+.subscribedCityUsers__circle {
+  padding: 0 !important;
+}
+
+.subscribedCityUsers__arrow {
+  padding: 10px !important;
+  padding-right: 1px !important;
+}
+
+td.MuiTableCell-body > p {
+  font-size: 0.86em;
+  white-space: nowrap;
+  text-wrap: nowrap;
+}
+
+.MuiTypography-root {
+  padding-left: 15px !important;
+  padding-top: 10px !important;
+}
+
+.subscribedCityUsers__displayName {
+  font-weight: 600 !important;
+  width: 100px !important;
+  padding-left: 5px !important;
+  padding-right: 5px !important;
+  /* color: #00a64e; */
+}

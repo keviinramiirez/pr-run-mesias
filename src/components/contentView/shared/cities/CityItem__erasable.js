@@ -1,7 +1,7 @@
 // import { useSortable } from '@dnd-kit/sortable'
 // import { CSS } from '@dnd-kit/utilities'
 import './CityItem.css'
-import Circle from '../Circle/Circle'
+import Circle from '../../map/Circle'
 import {
   MenuItem,
   Select,
@@ -34,7 +34,7 @@ const CityItem = ({ city, onCityChange }) => {
         <Select
           variant='outlined'
           // onChange={(e) => onCityChange(e)}
-          onChange={(e) => onCityChange(e, city)}
+          onChange={e => onCityChange(e, city)}
           value={city.visited}
         >
           {visitedValues.map((_, i) => {

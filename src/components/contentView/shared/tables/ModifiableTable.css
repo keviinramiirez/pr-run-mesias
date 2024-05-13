@@ -1,0 +1,33 @@
+.modifiableTable {
+  margin-top: 20px;
+  overflow: scroll;
+}
+
+.modifiableTable.modifiableTable__staticHeight {
+  height: 340px;
+}
+
+/* .modifiableTable tr {
+  display: flex;
+  justify-content: space-between;
+} */
+
+.modifiableTable > tr:nth-of-type(odd) {
+  background-color: #f3f2f8;
+}
+
+/* .modifiableTable > tr > td {
+  padding: 0.5rem;
+}
+
+.modifiableTable > tr > td:nth-child(1) {
+  width: 20px;
+}
+
+.modifiableTable > tr > td:nth-child(2) {
+  width: 80px;
+}
+
+.modifiableTable > tr > td:nth-child(3) {
+  width: 70px;
+} */

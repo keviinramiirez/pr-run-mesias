@@ -1,0 +1,32 @@
+.subscribedUsers {
+  /* height: 100px !important;
+  overflow: auto !important; */
+  display: block;
+  overflow: auto;
+  max-height: 200px !important;
+  /* width: 100% !important; */
+}
+.subscribedUsers > p {
+  margin-top: 1em;
+}
+
+.subscribedUsers > tr {
+  height: 30px !important;
+  width: 100% !important;
+}
+
+.subscribedUsers > tr > td {
+  /* height: 20px !important; */
+  width: 100% !important;
+  overflow: hidden;
+}
+
+.subscribedUsers > tr > td > p {
+  /* width: 100% !important; */
+}
+
+.subscribedUsers > tr:nth-of-type(odd) {
+  background-color: #f3f2f8;
+  /* height: 20px !important; */
+  min-width: 100px !important;
+}

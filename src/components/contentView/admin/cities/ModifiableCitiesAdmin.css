@@ -1,0 +1,27 @@
+.modifiableCitiesAdmin {
+  /* background-color: #d9d9d9; */
+  border-radius: 5px;
+  /* margin: 15px; */
+  /* padding-bottom: 15px; */
+  /* width: 100%; */
+  /* max-width: 500px; */
+  display: flex;
+  flex-direction: column;
+  /* gap: 15px; */
+
+  overflow: scroll;
+  height: inherit !important;
+  color: #6a5d5d;
+}
+
+.modifiableCitiesAdmin > .MuiCardContent-root {
+  padding-bottom: 24px;
+}
+
+/* .modifiableCitiesGuest > .MuiCardContent-root > h4 {
+  color: #4c4c4c;
+} */
+
+.modifiableCitiesAdmin > .MuiCardContent-root > h4 > span {
+  color: #0050ef;
+}

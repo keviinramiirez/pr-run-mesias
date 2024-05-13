@@ -6,7 +6,8 @@
   padding: 0 10px;
 }
 
-.header__icon > svg.MuiSvgIcon-root {
+.header__icon > svg.MuiSvgIcon-root,
+.header__icon > .MuiAvatar-root {
   /* height: 32px;
   width: 32px; */
   cursor: pointer !important;

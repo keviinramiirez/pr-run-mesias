@@ -25,12 +25,12 @@ export const DAY_NAME = {
   6: 'Lunes',
 }
 
-export const toJSDate = (fTimestamp) => {
+export const toJSDate = fTimestamp => {
   // console.log('fTimestamp', fTimestamp)
   return new Timestamp(fTimestamp.seconds, fTimestamp.nanoseconds).toDate()
 }
 
-export const toFirebaseTimestampSeconds = (d) => {
+export const toFirebaseTimestampSeconds = d => {
   // console.log('fTimestamp', fTimestamp)
   return d.getTime() / 1000
 }
@@ -39,7 +39,7 @@ export const toFirebaseTimestampSeconds = (d) => {
  * Returns given date into ISO format string excluding the time section.
  * @param {object | string} d a timestamp or date object
  */
-export const toISOYearFormat = (d) => {
+export const toISOYearFormat = d => {
   if (!d) return ''
   // console.log('d', d, d instanceof String)
   if (typeof d === 'string') {
@@ -58,7 +58,7 @@ export const toISOYearFormat = (d) => {
         addLeadingZeros(parsed.getDate())
 }
 
-export const beautifyDateHour = (d) => {
+export const beautifyDateHour = d => {
   if (!d) return ''
   // const d = toJSDate(date)
   // const parsed = toJSDate(d)
@@ -72,7 +72,7 @@ export const beautifyDateHour = (d) => {
  * @param {string} d a date object.
  * @param {boolean} spaceBeforePeriod true to add a space between the minute and the time period.
  */
-export const get12HourFormatOfDate = (d, spaceBeforePeriod) => {
+export const get12HourFormatOfDate = (d, spaceBeforePeriod = false) => {
   if (!d) return null
   const split = get24HourFormatOfDate(toJSDate(d)).split(':')
 
@@ -117,8 +117,7 @@ export const get24HourFormatOfTime = (t, zeroOnHour) => {
  * Returns a string format describing the given date (i.e. Nov. 16, 2021).
  * @param {*} d date to be beautify
  */
-export const beautifyDate = (d) =>
-  d ? beautifyDateStr(toISOYearFormat(d)) : ''
+export const beautifyDate = d => (d ? beautifyDateStr(toISOYearFormat(d)) : '')
 // export const beautifyDate = (d) =>
 //   d
 //     ? beautifyDateStr(toISOYearFormat(d)) + ' a las ' + get12HourFormatOfDate(d)
@@ -130,20 +129,20 @@ export const beautifyDate = (d) =>
  * Returns a string format describing the given date in string string form (i.e. Nov. 16, 2021).
  * @param {string} s iso date formatted string (i.e. 2021-11-16).
  */
-const beautifyDateStr = (isoStr) => {
+const beautifyDateStr = isoStr => {
   // console.log('isoStr', isoStr)
   const split = isoStr.split('-')
   const [_, nMonth, nDay] = split
   return MONTH_NAME[nMonth - 1] + '. ' + nDay
 }
 
-const addLeadingZeros = (s) => ('0' + s).slice(-2)
+const addLeadingZeros = s => ('0' + s).slice(-2)
 
 /**
  * Returns the hours of the given date in a 24 hour format.
  * @param {string} d a date object.
  */
-export const get24HourFormatOfDate = (d) => {
+export const get24HourFormatOfDate = d => {
   // console.log('d', d)
   if (!d) return ''
   // if (typeof d === 'string') d = new Date(d)

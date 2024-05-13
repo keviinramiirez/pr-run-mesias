@@ -1,22 +1,19 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import './ToVisitCitiesList.css'
 // import VisitedCity from '../VisitedCity'
 // import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
-import Table from '../../Table'
-import {
-  citiesVisitValues,
-  sortToVisitCitiesByDateTime,
-} from '../../utils/util'
+import Table from '../tables/Table'
+import { citiesVisitValues, sortToVisitCitiesByDateTime } from '../../../../utils/util'
 
 export const ToVisitCitiesList = ({ cities }) => {
   const [toVisitCities, setToVisitCities] = useState([])
 
   useEffect(() => {
     const filterToVisit = cities.filter(
-      (city) => city.visited === citiesVisitValues.tovisit.visitedValue
+      city => city.visited === citiesVisitValues.tovisit.visitedValue
     )
     setToVisitCities(sortToVisitCitiesByDateTime(filterToVisit))
   }, [cities])
