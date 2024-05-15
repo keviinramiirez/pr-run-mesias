@@ -22,6 +22,7 @@ const AuthProvider = ({ children }) => {
   // const [isLoading, setIsLoading] = useState(true)
   const initState = {
     currentUser: null, //email, emailVerified, photoURL, displayName, accessToken, type
+    // subscribedTovisitCities: [],
     isLoggedIn: false,
     isEmailUser: false,
     isGoogleUser: false,
@@ -76,19 +77,20 @@ const AuthProvider = ({ children }) => {
     dispatchAuthAction({ type: 'INIT_GOOGLE_USER', payload: { user } })
   }
 
-  const dispatchUserCitySubscription = async (city, unsortedCities) => {
+  const dispatchUserCitySubscription = async (city, isSubscribed) => {
     // console.log('-----unsortedCities', unsortedCities)
     // const isUserSubscribedToCity = authState.currentUser.subscribedCities.includes(city.name)
-    const isUserSubscribedToCity = authState.currentUser.subscribedCities.some(
-      c => c.name === city.name
-    )
-    if (isUserSubscribedToCity) {
+    // const isUserSubscribedToCity = authState.currentUser.subscribedCities.some(
+    //   c => c.name === city.name
+    // )
+    if (isSubscribed) {
+      console.log('unsubscribing...')
       await unsubscribeUserCity(authState.currentUser, city)
         .then(user => dispatchAuthAction({ type: 'SUBSCRIPTION_USER_CITY', payload: { user } }))
         .catch(err => console.log('err', err))
     } else {
       await subscribeUserCity(authState.currentUser, city).then(user => {
-        console.log('unsubscribeUserCity.then -> user', user)
+        console.log('subscribing...')
         dispatchAuthAction({ type: 'SUBSCRIPTION_USER_CITY', payload: { user } })
       })
     }

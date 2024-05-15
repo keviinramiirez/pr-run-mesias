@@ -1,4 +1,85 @@
 .subscribedCityUsersList {
+  background-color: #f5f5f5;
+}
+
+.subscribedCityUsersList__tableContainer {
   max-height: 400px;
-  min-width: 360px;
+  /* min-width: 360px; */
+  max-width: 400px;
+  overflow-x: hidden !important;
+}
+
+.subscribedCityUsersList__tableContainer.MuiPaper-rounded {
+  border-radius: 0 !important;
+}
+
+.subscribedCityUsersList__tabs {
+  /* position: absolute; */
+  width: 100%;
+  max-width: 400px;
+  height: 40px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  cursor: pointer;
+  padding-bottom: 1px;
+  box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14),
+    0px 1px 3px 0px rgba(0, 0, 0, 0.12) !important;
+}
+
+.subscribedCityUsersList__tab {
+  display: grid;
+  align-items: center;
+  text-align: center;
+  width: 50%;
+  height: 100%;
+  background-color: #fafafa;
+  /* grid-template-columns: 1fr 2fr; */
+}
+
+/* .subscribedCityUsersList__tab {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  width: 50%;
+  height: 100%;
+  background-color: #fafafa;
+} */
+
+.subscribedCityUsersList__tab > .circle {
+  position: absolute;
+  /* margin-top: -26px; */
+  /* top: 0;
+  left: 0; */
+  /* margin-left: 9px; */
+  /* margin-top: -1px; */
+  /* position: relative;
+  top: 12px;
+  left: 8px; */
+  /* width: 40%;
+  align-items: center; */
+}
+
+.subscribedCityUsersList__tab > h6 {
+  font-size: 1em !important;
+}
+
+.subscribedCityUsersList__tab > .MuiTypography-caption.marginLeft {
+  margin-left: 12px !important;
+}
+
+/* .subscribedCityUsersList__table {
+  margin-top: 40px;
+} */
+
+.subscribedCityUsersList__noPaddingLeft {
+  padding-left: 5px !important;
+}
+
+.subscribedCityUsersList__paddingLeft {
+  padding-left: 16px !important;
+}
+
+.subscribedCityUsersList__tableRow > .MuiTableCell-stickyHeader {
+  background-color: #f5f5f5 !important;
 }

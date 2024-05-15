@@ -38,7 +38,7 @@
   align-items: center;
 }
 
-.cityEdit__selectField > h3 {
+.cityEdit__selectField > h4 {
   color: rgb(0, 80, 239);
 }
 
@@ -86,6 +86,6 @@
   overflow: scroll; */
 }
 
-.cityEdit__right > h4 {
+.cityEdit__right > h5 {
   color: #c00043;
 }

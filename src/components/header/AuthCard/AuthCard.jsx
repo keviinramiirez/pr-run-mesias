@@ -33,7 +33,7 @@ const AuthCard = ({ authCardDimensions, onHideAuthCard, onLogout, isButtonDisabl
   // }
 
   useEffect(() => {
-    console.log('isLoggedIn', isLoggedIn)
+    // console.log('isLoggedIn', isLoggedIn)
   }, [])
 
   const activateLogin = () => {

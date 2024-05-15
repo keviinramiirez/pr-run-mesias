@@ -1,4 +1,5 @@
 .app__subscribedCityUsers {
+  margin-top: 20px;
   margin-bottom: 20px;
 }
 
@@ -16,6 +17,12 @@
   color: #d8d8d8;
 }
 
-#contentView > h4 > span {
+#contentView > h5 > span,
+.app__hero > h5 > span {
   color: #ed0000 !important;
+}
+
+#contentView > h5 > p {
+  display: inline;
+  color: #0050ef !important;
 }

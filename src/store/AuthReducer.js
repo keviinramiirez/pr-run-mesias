@@ -19,7 +19,7 @@ const AuthReducer = (state, action) => {
 
   switch (type) {
     case types.RESET: {
-      console.log('RESET', payload)
+      // console.log('RESET', payload)
       // logoutStorage()
       return {
         ...payload,

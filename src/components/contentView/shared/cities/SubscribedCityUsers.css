@@ -21,9 +21,14 @@ td.MuiTableCell-body > p {
   text-wrap: nowrap;
 }
 
-.MuiTypography-root {
-  padding-left: 15px !important;
+.subscribedCityUsers__innerTableLab.MuiTypography-root {
+  padding-left: 2px !important;
   padding-top: 10px !important;
+  font-weight: 500 !important;
+}
+
+.subscribedCityUsers__tableRow {
+  background-color: #ff20200c;
 }
 
 .subscribedCityUsers__displayName {
@@ -31,5 +36,13 @@ td.MuiTableCell-body > p {
   width: 100px !important;
   padding-left: 5px !important;
   padding-right: 5px !important;
-  /* color: #00a64e; */
+  color: #0050efa2;
+}
+
+.subscribedCityUsers__noPaddingLeft {
+  padding-left: 5px !important;
+}
+
+.subscribedCityUsers__paddingLeft {
+  padding-left: 16px !important;
 }

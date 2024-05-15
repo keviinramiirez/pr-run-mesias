@@ -78,6 +78,9 @@ const SubscribedUsers = ({ city }) => {
       {subscribedUsers.length === 0 && <p>Nadie suscrito aún</p>}
       {subscribedUsers.length > 0 && (
         <>
+          <td>
+            <p>{'El Mesias'}</p>
+          </td>
           {subscribedUsers?.map(({ displayName }) => {
             return (
               <tr key={displayName}>

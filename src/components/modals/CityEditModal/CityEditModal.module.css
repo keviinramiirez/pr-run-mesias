@@ -15,6 +15,7 @@
   transform: translate(-50%, -50%);
   max-width: 500px;
   min-width: 350px;
+  /* min-height: 300px; */
   z-index: 21;
   background: white;
   border-radius: 8px;

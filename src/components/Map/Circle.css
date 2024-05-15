@@ -1,21 +1,52 @@
-.circle__withBorder {
+.notificationAmountLabel {
+  display: inline-block;
+  position: absolute;
+  /* top: 14px;
+  right: -10px; */
   width: 15px !important;
   height: 15px !important;
+}
+.notificationAmountLabel > .label {
+  /* background: #f11008; */
+  /* color: white; */
+  border-radius: 50%;
+  display: inline-block;
+  padding-left: 4px;
+  padding-right: 4px;
+  text-align: center;
+  font-size: 0.55em;
+  font-weight: 500 !important;
+  border-width: 1px !important;
+
+  /* margin-top: -40px; */
+}
+
+.circle__withBorder {
   border-radius: 50%;
 }
 
+.circle__regular {
+  width: 15px !important;
+  height: 15px !important;
+}
+
+/* .circle__small {
+  width: 14px !important;
+  height: 14px !important;
+} */
+
 .circle__grey {
-  border: solid #808080 3px;
+  border: solid #808080 2px;
   background: #80808044;
 }
 
 .circle__green {
-  border: solid #00d061 3px;
+  border: solid #01823d 2px;
   background: #00d06144;
 }
 
 .circle__blue {
-  border: solid #0050ef 3px;
+  border: solid #0050ef 2px;
   background: #0050ef44;
 }
 

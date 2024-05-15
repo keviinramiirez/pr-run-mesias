@@ -12,6 +12,8 @@
   overflow: scroll;
   height: inherit !important;
   color: #6a5d5d;
+  max-width: 400px;
+  margin-bottom: 15px;
 }
 
 .modifiableCitiesGuest > .MuiCardContent-root {

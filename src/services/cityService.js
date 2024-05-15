@@ -12,13 +12,25 @@ import {
 } from 'firebase/firestore'
 import { citiesVisitValues, sortCitiesByName, sortCitiesByToVisit } from '../utils/util'
 
-export const getCityVisitedColor = city => {
-  const { visited } = city
+export const getVisitedColor = visitedValue => {
   let color = '#808080' //grey
-  if (visited === citiesVisitValues.tovisit.visitedValue) color = '#0050ef' // blue
-  else if (visited === citiesVisitValues.visited.visitedValue) color = '#00a64e' // green
+  if (visitedValue === citiesVisitValues.tovisit.visitedValue) color = '#0050ef' // blue
+  else if (visitedValue === citiesVisitValues.visited.visitedValue) color = '#01823d' // green
   return color
 }
+
+// export const getSubscribedTovisitCitiesOf = user => {
+//   const subscribedTovisitCities = []
+//   user?.subscribedCities.forEach(city => {
+//     const tovisitCity = cities.find(mc => city.name === mc.name && mc.visited === 2)
+//     if (tovisitCity) {
+//       console.log(tovisitCity.name, 'subscribedTovisitCities', subscribedTovisitCities)
+//       subscribedTovisitCities.push(tovisitCity)
+//     }
+//     // console.log('---', subcribedTovisitCity)
+//   })
+//   return subscribedTovisitCities
+// }
 
 export const fetchSubscribedUsersOf = async city => {
   // const q = query(collection(db, 'users'), where('subscribedCities.length', '>', 0))
@@ -28,10 +40,8 @@ export const fetchSubscribedUsersOf = async city => {
   querySnapshot.forEach(doc => {
     const user = doc.data()
     // const { subscribedCities } = user
-    if (doc.id !== 'password') {
-      // console.log(doc.id, ' => ', user, user.displayName)
-      if (user?.subscribedCities.some(c => c.name === city.name)) subscribedUsers.push(user)
-    }
+    // console.log(doc.id, ' => ', user, user.displayName)
+    if (user?.subscribedCities.some(c => c.name === city.name)) subscribedUsers.push(user)
   })
   // console.log('subscribedUsers', subscribedUsers)
   return subscribedUsers
@@ -66,6 +76,7 @@ export const unsubscribeUserCity = async (user, city) => {
   // let cityToModify = { ...cities[toModifyIndex] }
   // cityToModify.visited = selectedVisitedValue
   // citiesClone[toModifyIndex] = cityToModify
+  console.log('subscribedCitiesClone', subscribedCitiesClone)
   const newUser = {
     ...user,
     subscribedCities: subscribedCitiesClone,

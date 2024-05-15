@@ -148,7 +148,7 @@ const CityEdit = ({ city, onCityChange, onSaveChanges, onCloseCityEdit }) => {
         <div className='cityEdit__container'>
           <div className='cityEdit__left'>
             <div className='cityEdit__selectField'>
-              <h3>{city.name}</h3>
+              <h4>{city.name}</h4>
               <FormControl>
                 <Select
                   variant='outlined'
@@ -228,7 +228,7 @@ const CityEdit = ({ city, onCityChange, onSaveChanges, onCloseCityEdit }) => {
             )}
           </div>
           <div className='cityEdit__right'>
-            <h4>Suscritos</h4>
+            <h5>Suscritos</h5>
             <SubscribedUsers city={city} />
           </div>
         </div>

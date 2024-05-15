@@ -12,9 +12,9 @@ export const VisitedCitiesList = ({ cities, visitedAmount }) => {
   return (
     <Card className='visitedCitiesList'>
       <CardContent>
-        <h3>
+        <h4>
           Ya corrimos en <span style={{ color: '#00a04b' }}>{visitedAmount}</span> ciudades
-        </h3>
+        </h4>
         <Table cities={cities} visitedValue={citiesVisitValues.visited.visitedValue} />
       </CardContent>
     </Card>

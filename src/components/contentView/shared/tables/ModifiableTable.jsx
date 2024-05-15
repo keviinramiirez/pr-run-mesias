@@ -5,7 +5,14 @@ import './ModifiableTable.css'
 import ModifiableCityItem from './ModifiableCityItem'
 import { useState, useEffect } from 'react'
 
-const ModifiableTable = ({ modifiableCities, isScrollable, onOpenCityEdit, visitedAmount }) => {
+const ModifiableTable = ({
+  modifiableCities,
+  isScrollable,
+  onOpenCityEdit,
+  visitedAmount,
+  subscribedTovisitSet,
+  onSubscription,
+}) => {
   // console.log('modifiableCities', modifiableCities)
   // const [isSubscribedCity, setIsSubscribedCity] = useState(checkIsSubscribedCity(undefined, city))
   // const [sortedCities, setSortedCities] = useState(
@@ -15,12 +22,6 @@ const ModifiableTable = ({ modifiableCities, isScrollable, onOpenCityEdit, visit
   // Context API
   const { authState, dispatchUserCitySubscription } = useAuthContext()
   const { currentUser } = authState
-  const { subscribedCities } = currentUser
-
-  // useEffect(() => {
-  //   setIsSubscribedCity(isSubscribedCity(currentUser, city))
-  // }, [subscribedCities])
-
   // const handleSubscription = () => {
   //   dispatchUserCitySubscription(city)
   // }
@@ -29,8 +30,12 @@ const ModifiableTable = ({ modifiableCities, isScrollable, onOpenCityEdit, visit
   //   setIsSubscribedCity(checkIsSubscribedCity(currentUser, city))
   // }, [subscribedCities])
 
-  const handleSubscription = city => {
-    dispatchUserCitySubscription(city)
+  // const handleSubscription = city => {
+  //   dispatchUserCitySubscription(city)
+  // }
+
+  const isSubscribedCity = city => {
+    return subscribedTovisitSet.has(city)
   }
 
   return (
@@ -42,7 +47,7 @@ const ModifiableTable = ({ modifiableCities, isScrollable, onOpenCityEdit, visit
       )}
       {currentUser?.type === 'guest' && (
         <h4>
-          Ciudades Suscritas: <span>{subscribedCities?.length}</span>
+          Ciudades Suscritas: <span>{subscribedTovisitSet?.size}</span>
         </h4>
       )}
       <div className={`modifiableTable ${isScrollable ? 'modifiableTable__staticHeight' : ''}`}>
@@ -50,8 +55,8 @@ const ModifiableTable = ({ modifiableCities, isScrollable, onOpenCityEdit, visit
           <ModifiableCityItem
             userType={currentUser?.type}
             city={city}
-            isSubscribedCity={checkIsSubscribedCity(currentUser, city)}
-            onSubscription={handleSubscription}
+            isSubscribedCity={isSubscribedCity(city)}
+            onSubscription={c => onSubscription(c, isSubscribedCity(city))}
             onOpenCityEdit={onOpenCityEdit}
           />
         ))}

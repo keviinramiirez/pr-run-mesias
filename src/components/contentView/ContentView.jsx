@@ -4,8 +4,6 @@ import { useEffect, useState } from 'react'
 import { db } from '../../auth/firebase'
 import { deleteField, updateDoc, collection, query, getDocs, setDoc, doc } from 'firebase/firestore'
 import { citiesVisitValues, sortCitiesByName, sortCitiesByToVisit } from '../../utils/util'
-import VisitedCitiesList from './shared/cities/VisitedCitiesList'
-import ToVisitCitiesList from './shared/cities/ToVisitCitiesList'
 import PRMap from '../map/PRMap'
 import ModifiableCitiesGuest from './guest/cities/ModifiableCitiesGuest'
 import ModifiableCitiesAdmin from './admin/cities/ModifiableCitiesAdmin'
@@ -14,12 +12,12 @@ import SubscribedCityUsersList from './shared/cities/SubscribedCityUsersList'
 const ContentView = ({ onHideAuthCard }) => {
   const [cities, setCities] = useState([])
   const [visitedCities, setVisitedCities] = useState([])
-  // const [nModifiedVisitedCities, setNModifiedVisitedCities] = useState(0)
+  const [subscribedTovisitSet, setSubscribedTovisitSet] = useState(new Set())
   const [visitedCitiesSet, setVisitedCitiesSet] = useState(new Set())
   const [modifiedCitiesMap, setModifiedCitiesMap] = useState(new Map())
 
   // Context API
-  const { authState, setIsLoggedIn } = useAuthContext()
+  const { authState, dispatchUserCitySubscription } = useAuthContext()
   const { currentUser, isLoggedIn } = authState
 
   useEffect(() => {
@@ -27,14 +25,14 @@ const ContentView = ({ onHideAuthCard }) => {
     // console.log('current_timestamp', current_timestamp)
 
     // console.log('currentUser?.type', currentUser.type)
-    const visitedSet = new Set()
-    const getCities = async () => {
+    const fetchCities = async () => {
       // console.log('db', db)
       const querySnapshot = await getDocs(query(collection(db, 'cities')))
       let id = 1
       let fetchedCities = []
-      const visitedCities = []
-      // console.log('querySnapshot', querySnapshot)
+      const visitedCities = [],
+        tovisitCities = []
+      const visitedSet = new Set()
       querySnapshot.forEach(doc => {
         const cityData = doc.data()
         cityData.id = id++
@@ -43,19 +41,33 @@ const ContentView = ({ onHideAuthCard }) => {
           visitedCities.push(cityData)
           visitedSet.add(cityData.name)
         }
+        if (cityData.visited === citiesVisitValues.tovisit.visitedValue) {
+          tovisitCities.push(cityData)
+        }
         // if (cityData.subscribeCities?.length > 0)
         //   console.log('subscribeCities', cityData.subscribeCities)
       })
       fetchedCities = sortCitiesByToVisit(fetchedCities)
       // const citiesClone = [...fetchedCities]
-      // console.log('citiesClone', citiesClone)
+      console.log('fetchedCities', fetchedCities)
       setCities(fetchedCities)
-      // setCitiesOrig(citiesClone)
       setVisitedCities(visitedCities)
       setVisitedCitiesSet(visitedSet)
+
+      const subscribedTovisitSet = new Set()
+      currentUser?.subscribedCities.forEach(city => {
+        const tovisitCity = fetchedCities.find(fc => city.name === fc.name && fc.visited === 2)
+        if (tovisitCity) {
+          subscribedTovisitSet.add(tovisitCity)
+          console.log(tovisitCity.name, 'subscribedTovisitCities', subscribedTovisitSet)
+        }
+        // console.log('---', subcribedTovisitCity)
+      })
+      // console.log('subscribedTovisitSet', subscribedTovisitSet)
+      setSubscribedTovisitSet(subscribedTovisitSet)
     }
 
-    getCities()
+    fetchCities()
   }, [])
 
   const handleHideAuthCard = setIsLoggedIn => {
@@ -186,22 +198,40 @@ const ContentView = ({ onHideAuthCard }) => {
     setCities(sortCitiesByToVisit(sortCitiesByName(citiesClone)))
   }
 
+  const handleSubscription = (city, isSubscribed) => {
+    console.log('handleSubscription -> isSubscribed ', isSubscribed)
+    dispatchUserCitySubscription(city, isSubscribed).then(() => {
+      if (isSubscribed) {
+        subscribedTovisitSet.delete(city)
+      } else {
+        subscribedTovisitSet.add(city)
+      }
+    })
+  }
+
+  // const logg = () => {
+  //   console.log('----', subscribedTovisitSet.has())
+  // }
+
+  const getFirstName = name => (name ? name.split(' ')[0] : '')
+
   return (
     <>
       {cities?.length > 0 && (
         <>
-          <section id='contentView'>
+          <section id='contentView' onClick={handleHideAuthCard}>
             {isLoggedIn && (
               <>
-                <h4 style={{ paddingBottom: '10px', textAlign: 'justify' }}>
-                  ACOMPAÑANOS A CORRER A PUERTO RICO COMPLETO EN <span>90 DÍAS</span>
-                </h4>
+                <h5 style={{ paddingBottom: '10px', textAlign: '', textTransform: 'uppercase' }}>
+                  ACOMPAÑANOS <p>{getFirstName(currentUser?.displayName)}</p> A CORRER A PUERTO RICO
+                  COMPLETO EN <span>90 DÍAS</span>
+                </h5>
                 <hr style={{ marginTop: '-6px', marginBottom: '15px' }} />
                 <div className='app__tables'>
                   <>
                     {currentUser?.type === 'admin' && (
-                      <div className='app__citiesList' onClick={handleHideAuthCard}>
-                        <div className='app__modifiableCitiesAdmin' onClick={handleHideAuthCard}>
+                      <div className='app__citiesList'>
+                        <div className='app__modifiableCitiesAdmin'>
                           <ModifiableCitiesAdmin
                             cities={cities}
                             visitedAmount={visitedCitiesSet?.size}
@@ -223,11 +253,15 @@ const ContentView = ({ onHideAuthCard }) => {
                         <div className='app__subscribedCityUsers'>
                           <SubscribedCityUsersList cities={cities} />
                         </div>
-                        <div className='app__modifiableCitiesGuest' onClick={handleHideAuthCard}>
+                        <div className='app__modifiableCitiesGuest'>
                           <ModifiableCitiesGuest
                             cities={cities}
                             onCityChange={handleCityUIChanges}
                             onSaveCityChanges={city => saveChanges(city)}
+                            subscribedTovisitSet={subscribedTovisitSet}
+                            onSubscription={(c, isSubscribedCity) =>
+                              handleSubscription(c, isSubscribedCity)
+                            }
                           />
                         </div>
                       </>
@@ -239,9 +273,9 @@ const ContentView = ({ onHideAuthCard }) => {
             {!isLoggedIn && (
               <>
                 <div className='app__hero' onClick={handleHideAuthCard}>
-                  <h2 style={{ paddingBottom: '10px' }}>
+                  <h4 style={{ paddingBottom: '10px', textAlign: '' }}>
                     ACOMPAÑANOS A CORRER A PUERTO RICO COMPLETO EN <span>90 DÍAS</span>
-                  </h2>
+                  </h4>
                   <p>
                     El reto consiste de correr un <strong style={{ color: '#0050ef' }}>5K</strong>{' '}
                     en cada uno de los pueblos de Puerto Rico. También, dentro de esos{' '}
@@ -251,26 +285,17 @@ const ContentView = ({ onHideAuthCard }) => {
                   </p>
                 </div>
 
-                <div className='app__subscribedCityUsers'>
+                <div className='app__subscribedCityUsers' onClick={handleHideAuthCard}>
                   <SubscribedCityUsersList cities={cities} />
                 </div>
 
-                {/* {cities.length > 0 && ( */}
-                <div className='app__toVisitCitiesList' onClick={handleHideAuthCard}>
+                {/* <div className='app__toVisitCitiesList' onClick={handleHideAuthCard}>
                   <ToVisitCitiesList
                     cities={cities}
                     visitedCitiesSet={visitedCitiesSet}
                     // nModifiedVisitedCities={nModifiedVisitedCities}
                   />
-                </div>
-
-                <div className='app__visitedCitiesList' onClick={handleHideAuthCard}>
-                  <VisitedCitiesList
-                    cities={visitedCities}
-                    visitedAmount={visitedCitiesSet?.size}
-                  />
-                </div>
-                {/* )} */}
+                </div> */}
               </>
             )}
           </section>

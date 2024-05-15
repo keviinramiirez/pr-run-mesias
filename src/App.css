@@ -76,6 +76,7 @@ body {
 
 .app__citiesList {
   margin-bottom: 20px;
+  max-width: 400px !important;
 }
 
 .app__citiesList > .MuiButtonBase-root.MuiButton-root,
@@ -147,14 +148,15 @@ body {
   }
 }
 
-@media (min-width: 820px) {
+/* @media (min-width: 820px) {
   .app__tables {
     display: flex;
     justify-content: space-between;
     width: 800px;
+    background-color: #fafafa;
   }
 
   .app__visitedCitiesList {
     margin: 0px auto 20px !important;
   }
-}
+} */
