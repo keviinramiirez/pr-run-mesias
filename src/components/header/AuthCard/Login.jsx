@@ -1,9 +1,7 @@
 import './Login.css'
 import { useEffect, useState } from 'react'
-import { useAuthContext } from '../../../store/AuthProvider'
-import { doSignInWithEmailAndPassword, doSignInWithGoogle } from '../../../auth/auth'
-import { Button, IconButton, InputAdornment, TextField } from '@material-ui/core'
-import { Visibility, VisibilityOff } from '@material-ui/icons'
+import { useAuthContext } from '../../../store/AuthContext/AuthProvider'
+import { doSignInWithGoogle } from '../../../services/authService'
 import { GoogleAuthProvider } from 'firebase/auth/cordova'
 
 const Login = ({ onHideAuthCard }) => {
@@ -56,14 +54,14 @@ const Login = ({ onHideAuthCard }) => {
           // setIsLoggedIn(false)
           dispatchSigninWithGoogle(null, null)
 
-          // Handle Errors here.
-          const errorCode = err.code
-          const errorMessage = err.message
-          // The email of the user's account used.
-          const email = err.customData.email
-          // The AuthCredential type that was used.
-          const credential = GoogleAuthProvider.credentialFromError(err)
-          // console.log('error signin in with Google', credential)
+          // // Handle Errors here.
+          // const errorCode = err.code
+          // const errorMessage = err.message
+          // // The email of the user's account used.
+          // const email = err.customData.email
+          // // The AuthCredential type that was used.
+          // const credential = GoogleAuthProvider.credentialFromError(err)
+          // // console.log('error signin in with Google', credential)
         })
     }
   }

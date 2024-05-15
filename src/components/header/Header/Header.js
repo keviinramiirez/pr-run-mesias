@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react'
-import AuthContext from '../../../store/AuthContext'
+import AuthContext from '../../../store/AuthContext/AuthContext'
 import AccountCircleIcon from '@material-ui/icons/AccountCircle'
 import './Header.css'
 import LoginCard from '../AuthCard/LoginCard'
 import AuthCard from '../AuthCard/AuthCard'
-import ExitToApp from '@material-ui/icons/ExitToApp'
-import { doSignOut } from '../../../auth/auth'
-import { useAuthContext } from '../../../store/AuthProvider'
+import { doSignOut } from '../../../services/authService'
+import { useAuthContext } from '../../../store/AuthContext/AuthProvider'
 import { Avatar } from '@material-ui/core'
 
 const Header = ({

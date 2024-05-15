@@ -52,7 +52,7 @@ const ModifiableCitiesAdmin = ({ cities, visitedAmount, onCityChange, onSaveCity
             // onSubscribe={handleSubscription}
             // visitedValue={}
             // showTable={visitedCitiesSet.size - nModifiedVisitedCities > 0}
-            // visitedValue={citiesVisitValues.tovisit.visitedValue}
+            // visitedValue={visitValuesMap.tovisit}
           />
         </CardContent>
       </Card>

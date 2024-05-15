@@ -1,14 +1,11 @@
 import { useEffect, useReducer, useContext } from 'react'
 import AuthContext from './AuthContext'
 import AuthReducer from './AuthReducer'
-import bcrypt from 'bcryptjs'
-import { logoutStorage, getToken } from '../services/authService'
-import { db, auth } from '../auth/firebase'
-import { collection, query, getDocs } from 'firebase/firestore'
-import { onAuthStateChanged, signInWithPopup } from 'firebase/auth'
-import { GoogleAuthProvider } from 'firebase/auth/cordova'
-import { doSignInWithGoogle, verifyAndFetchGoogleUserData } from '../auth/auth'
-import { subscribeUserCity, unsubscribeUserCity } from '../services/cityService'
+import { auth } from '../../services/firebase'
+import { onAuthStateChanged } from 'firebase/auth'
+// import { GoogleAuthProvider } from 'firebase/auth/cordova'
+import { verifyAndFetchGoogleUserData } from '../../services/authService'
+import { subscribeUserCity, unsubscribeUserCity } from '../../services/cityService'
 
 export function useAuthContext() {
   return useContext(AuthContext)
@@ -22,7 +19,6 @@ const AuthProvider = ({ children }) => {
   // const [isLoading, setIsLoading] = useState(true)
   const initState = {
     currentUser: null, //email, emailVerified, photoURL, displayName, accessToken, type
-    // subscribedTovisitCities: [],
     isLoggedIn: false,
     isEmailUser: false,
     isGoogleUser: false,
@@ -53,10 +49,8 @@ const AuthProvider = ({ children }) => {
       // const currentUser = user
       // currentUser.accessToken = token;
       await verifyAndFetchGoogleUserData(user).then(userData => {
-        console.log('userData', userData)
+        // console.log('userData', userData)
         dispatchAuthAction({ type: 'INIT_GOOGLE_USER', payload: { user: userData } })
-
-        // currentUser = userData
       })
       // console.log('AFTER INIT DISPATCH', user)
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import './AuthCard.css'
-import { useAuthContext } from '../../../store/AuthProvider'
+import { useAuthContext } from '../../../store/AuthContext/AuthProvider'
 import Login from './Login'
 
 import Card from '@material-ui/core/Card'

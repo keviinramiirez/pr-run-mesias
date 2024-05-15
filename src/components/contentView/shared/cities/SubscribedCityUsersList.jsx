@@ -11,28 +11,34 @@ import Paper from '@material-ui/core/Paper'
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp'
 import SubscribedCityUsers from './SubscribedCityUsers'
-import { fetchSubscribedUsersOf, getVisitedColor } from '../../../../services/cityService'
-import Circle from '../../../map/Circle'
-
-const tabValues = {
-  tovisit: 2,
-  visited: 1,
-  notvisited: 0,
-}
-const activeBackgroundCSS = '#f3f3f3'
-// const activeBorderCSS = '2px solid #0050ef'
+import {
+  fetchSubscribedUsersOf,
+  isTovisitValue,
+  visitValuesMap,
+} from '../../../../services/cityService'
+import VisitedTabs from '../tables/VisitedTabs'
 
 const SubscribedCityUsersList = ({ cities }) => {
-  const [activeTab, setActiveTab] = useState(tabValues.tovisit)
+  const [activeTab, setActiveTab] = useState(visitValuesMap.tovisit)
   const [activeCities, setActiveCities] = useState([])
   const [cityUsersMap, setCityUsersMap] = useState(new Map())
   // const [subscribedUsers, setSubscribedUsers] = useState([])
 
-  const [labelDimensions, setLabelDimensions] = useState({})
-
+  // iconElements
   const tovisitLabelEl = useRef(null)
   const visitedLabelEl = useRef(null)
   const notvisitedLabelEl = useRef(null)
+  const labelElements = {
+    tovisitLabelEl,
+    visitedLabelEl,
+    notvisitedLabelEl,
+  }
+
+  const [labelDimensions, setLabelDimensions] = useState({})
+
+  // const tovisitLabelEl = useRef(null)
+  // const visitedLabelEl = useRef(null)
+  // const notvisitedLabelEl = useRef(null)
 
   // console.log('--cities', cities)
   // const { displayName, date } = cities
@@ -44,7 +50,7 @@ const SubscribedCityUsersList = ({ cities }) => {
   // const { subscribedCities } = currentUser
 
   useEffect(() => {
-    handleActiveTab(tabValues.tovisit)
+    handleActivateTab(visitValuesMap.tovisit, labelElements.tovisitLabelEl)
   }, [])
 
   useEffect(() => {
@@ -53,9 +59,9 @@ const SubscribedCityUsersList = ({ cities }) => {
 
   useEffect(() => {
     const map = new Map()
-    if (isTovisitActive()) {
+    if (isTovisitValue(visitValuesMap.tovisit)) {
       activeCities.forEach(city => {
-        if (city.visited === tabValues.tovisit) {
+        if (city.visited === visitValuesMap.tovisit) {
           fetchSubscribedUsersOf(city).then(users => {
             const cityName = city.name
             users.forEach(user => {
@@ -69,32 +75,32 @@ const SubscribedCityUsersList = ({ cities }) => {
       // console.log('map', map)
       setCityUsersMap(map)
     } else setCityUsersMap(new Map())
-    // if (isTovisitActive() && activeCities[0].visited === tabValues.visited) {}
+    // if (isTovisitValue() && activeCities[0].visited === visitValuesMap.visited) {}
   }, [activeCities])
 
-  const isTovisitActive = () => activeTab === tabValues.tovisit
-  const isVisitedActive = () => activeTab === tabValues.visited
-  const isNotVisitedActive = () => activeTab === tabValues.notvisited
+  // const isTovisitValue = () => activeTab === visitValuesMap.tovisit
+  // const isVisitedActive = () => activeTab === visitValuesMap.visited
+  // const isNotVisitedActive = () => activeTab === visitValuesMap.notvisited
 
-  const handleActiveTab = visitValue => {
+  const handleActivateTab = (visitValue, labelEl) => {
     let top,
       left,
       iconMarginLeft = 0
 
-    if (visitValue === tabValues.tovisit) {
-      setActiveTab(tabValues.tovisit)
+    if (visitValue === visitValuesMap.tovisit) {
+      setActiveTab(visitValuesMap.tovisit)
       iconMarginLeft = 15
-      left = iconMarginLeft + tovisitLabelEl.current.offsetLeft
-      top = tovisitLabelEl.current.offsetTop + tovisitLabelEl.current.clientHeight - 36
-    } else if (visitValue === tabValues.visited) {
-      setActiveTab(tabValues.visited)
+      left = iconMarginLeft + labelEl.current.offsetLeft
+      top = labelEl.current.offsetTop + labelEl.current.clientHeight - 36
+    } else if (visitValue === visitValuesMap.visited) {
+      setActiveTab(visitValuesMap.visited)
       iconMarginLeft = 3
-      left = iconMarginLeft + visitedLabelEl.current.offsetLeft
-      top = visitedLabelEl.current.offsetTop + visitedLabelEl.current.clientHeight - 36
-    } else if (visitValue === tabValues.notvisited) {
-      setActiveTab(tabValues.notvisited)
-      left = iconMarginLeft + notvisitedLabelEl.current.offsetLeft
-      top = notvisitedLabelEl.current.offsetTop + notvisitedLabelEl.current.clientHeight - 36
+      left = iconMarginLeft + labelEl.current.offsetLeft
+      top = labelEl.current.offsetTop + labelEl.current.clientHeight - 36
+    } else if (visitValue === visitValuesMap.notvisited) {
+      setActiveTab(visitValuesMap.notvisited)
+      left = iconMarginLeft + labelEl.current.offsetLeft
+      top = labelEl.current.offsetTop + labelEl.current.clientHeight - 36
     }
     setLabelDimensions({
       // position: 'absolute',
@@ -102,13 +108,13 @@ const SubscribedCityUsersList = ({ cities }) => {
       left,
     })
   }
-  const activeBorderCSS = () => {
-    return `2px solid ${getVisitedColor(activeTab)}`
-  }
+  // const activeBorderCSS = () => {
+  //   return `2px solid ${getVisitColor(activeTab)}`
+  // }
 
   // const activeTabStyle = (tabValue) => {
   //   let borderProperty = '2px solid #32a1ce'
-  //   // if (isTovisitActive())
+  //   // if (isTovisitValue())
   //   return {
   //     borderBottom: `${activeTabs.tovisit ? '2px solid #32a1ce' : ''}`,
   //   }
@@ -118,105 +124,13 @@ const SubscribedCityUsersList = ({ cities }) => {
     <div className='subscribedCityUsersList'>
       {/* <h2></h2> */}
       {/* <hr style={{ marginTop: '-6px' }} /> */}
-      <div className='subscribedCityUsersList__tabs'>
-        <div
-          className='subscribedCityUsersList__tab'
-          style={{
-            borderBottom: `${isTovisitActive() ? activeBorderCSS() : ''}`,
-            backgroundColor: `${isTovisitActive() ? activeBackgroundCSS : ''}`,
-            fontWeight: `${isTovisitActive() ? '600' : '500'}`,
-          }}
-          onClick={() => handleActiveTab(tabValues.tovisit)}
-        >
-          {isTovisitActive() && Object.keys(labelDimensions).length > 0 && (
-            <Circle
-              visited={tabValues.tovisit}
-              small={true}
-              labelData={{
-                amountLabel: activeCities.length,
-                position: 'absolute',
-                top: labelDimensions.top + 'px',
-                left: labelDimensions.left + 'px',
-                // paddingTop: '-22px !important',
-              }}
-            />
-          )}
-          <Typography
-            variant='caption'
-            component='div'
-            style={{ fontWeight: `${isTovisitActive() ? '600' : '500'}` }}
-            ref={tovisitLabelEl}
-          >
-            Próximas
-          </Typography>
-        </div>
-        <div
-          className='subscribedCityUsersList__tab'
-          style={{
-            borderBottom: `${isVisitedActive() ? activeBorderCSS() : ''}`,
-            backgroundColor: `${isVisitedActive() ? activeBackgroundCSS : ''}`,
-            fontWeight: `${isVisitedActive() ? '600' : '500'}`,
-          }}
-          onClick={() => handleActiveTab(tabValues.visited)}
-        >
-          {isVisitedActive() && Object.keys(labelDimensions).length > 0 && (
-            <Circle
-              visited={tabValues.visited}
-              small={true}
-              labelData={{
-                amountLabel: activeCities.length,
-                position: 'absolute',
-                top: labelDimensions.top + 'px',
-                left: labelDimensions.left + 'px',
-              }}
-            />
-          )}
-          <Typography
-            variant='caption'
-            component='div'
-            // className={`${isVisitedActive() ? 'marginLeft' : ''}`}
-            style={{
-              fontWeight: `${isVisitedActive() ? '600' : '500'}`,
-            }}
-            ref={visitedLabelEl}
-          >
-            Completadas
-          </Typography>
-        </div>
-        <div
-          className='subscribedCityUsersList__tab'
-          style={{
-            borderBottom: `${isNotVisitedActive() ? activeBorderCSS() : ''}`,
-            backgroundColor: `${isNotVisitedActive() ? activeBackgroundCSS : ''}`,
-          }}
-          onClick={() => handleActiveTab(tabValues.notvisited)}
-        >
-          {isNotVisitedActive() && Object.keys(labelDimensions).length > 0 && (
-            <Circle
-              visited={tabValues.notvisited}
-              small={true}
-              labelData={{
-                amountLabel: activeCities.length,
-                position: 'absolute',
-                top: labelDimensions.top + 'px',
-                left: labelDimensions.left + 'px',
-              }}
-            />
-          )}
-          <Typography
-            variant='caption'
-            component='div'
-            // className={`${isNotVisitedActive() ? 'marginLeft' : ''}`}
-            style={{
-              fontWeight: `${isNotVisitedActive() ? '600' : '500'}`,
-              marginLeft: `${isNotVisitedActive() ? '10px !important' : ''}`,
-            }}
-            ref={notvisitedLabelEl}
-          >
-            Aún por visitar
-          </Typography>
-        </div>
-      </div>
+      <VisitedTabs
+        activeCities={activeCities}
+        activeTab={activeTab}
+        onActivateTab={(visitValue, labelEl) => handleActivateTab(visitValue, labelEl)}
+        labelDimensions={labelDimensions}
+        labelElements={labelElements}
+      />
       <TableContainer component={Paper} className='subscribedCityUsersList__tableContainer'>
         <Table
           className='subscribedCityUsersList__table'
@@ -226,12 +140,12 @@ const SubscribedCityUsersList = ({ cities }) => {
           <TableHead className='subscribedCityUsersList__tableHeader'>
             <TableRow className='subscribedCityUsersList__tableRow'>
               {/* {!activeTab.tovisit && <TableCell />}  */}
-              {isTovisitActive() && <TableCell />}
+              {isTovisitValue(activeTab) && <TableCell />}
               {/* <TableCell /> */}
               <TableCell
                 align='left'
                 className={`${
-                  isTovisitActive()
+                  isTovisitValue(activeTab)
                     ? 'subscribedCityUsersList__noPaddingLeft'
                     : 'subscribedCityUsersList__paddingLeft'
                 }`}
@@ -269,46 +183,3 @@ const SubscribedCityUsersList = ({ cities }) => {
 }
 
 export default SubscribedCityUsersList
-
-{
-  /* 
-<div className='subscribedCityUsersList__tabs'>
-  <div
-    className='subscribedCityUsersList__tab subscribedCityUsersList__loginTab'
-    style={{
-      borderBottom: `${isTovisitActive() ? activeBorderCSS : ''}`,
-      backgroundColor: `${isTovisitActive() ? activeBackgroundCSS : ''}`,
-    }}
-    onClick={() => setActiveTab(tabValues.tovisit)}
-  >
-    <Typography variant='caption' component='div'>
-      Próximas
-    </Typography>
-  </div>
-  <div
-    className='subscribedCityUsersList__tab subscribedCityUsersList__registerTab'
-    style={{
-      borderBottom: `${isVisitedActive() ? activeBorderCSS : ''}`,
-      backgroundColor: `${isVisitedActive() ? activeBackgroundCSS : ''}`,
-    }}
-    onClick={() => setActiveTab(tabValues.visited)}
-  >
-    <Typography variant='caption' component='div'>
-      Completadas
-    </Typography>
-  </div>
-  <div
-    className='subscribedCityUsersList__tab subscribedCityUsersList__registerTab'
-    style={{
-      borderBottom: `${isNotVisitedActive() ? activeBorderCSS : ''}`,
-      backgroundColor: `${isNotVisitedActive() ? activeBackgroundCSS : ''}`,
-    }}
-    onClick={() => setActiveTab(tabValues.notvisited)}
-  >
-    <Typography variant='caption' component='div'>
-      Aún por visitar
-    </Typography>
-  </div>
-</div> 
-*/
-}

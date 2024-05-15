@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { useAuth } from '../../../store/AuthProvider'
-import { doCreateUserWithEmailAndPassword } from '../../../auth/auth'
+import { useAuth } from '../../../store/AuthContext/AuthProvider'
+import { doCreateUserWithEmailAndPassword } from '../../../services/authService'
 
 const Register = () => {
   const [email, setEmail] = useState('')
@@ -9,7 +9,7 @@ const Register = () => {
   const [isRegistering, setIsRegistaring] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
 
-  const onSubmit = async (e) => {
+  const onSubmit = async e => {
     e.preventDefault()
     if (!isRegistering) {
       setIsRegistaring(true)

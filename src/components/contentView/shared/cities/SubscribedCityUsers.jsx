@@ -2,7 +2,7 @@ import './SubscribedCityUsers.css'
 import { useState, useEffect } from 'react'
 import { beautifyDate, get12HourFormatOfDate } from '../../../../services/dateServices'
 // import { useAuthContext } from '../../../../store/AuthProvider'
-import { fetchSubscribedUsersOf, getVisitedColor } from '../../../../services/cityService'
+import { fetchSubscribedUsersOf, getVisitColor } from '../../../../services/cityService'
 import Box from '@material-ui/core/Box'
 import Collapse from '@material-ui/core/Collapse'
 import IconButton from '@material-ui/core/IconButton'
@@ -27,7 +27,7 @@ const SubscribedCityUsers = ({ city, cityUsersMap }) => {
   // const { subscribedCities } = currentUser
 
   useEffect(() => {
-    // console.log('subscribedUsers', subscribedUsers)
+    console.log('cityUsersMap', cityUsersMap)
     if (openSubscribedUsers) {
       setSubscribedUsers(cityUsersMap.get(name))
     }
@@ -62,7 +62,7 @@ const SubscribedCityUsers = ({ city, cityUsersMap }) => {
           <Circle visited={visited} />
         </TableCell> */}
         <TableCell
-          style={{ color: `${visited !== 0 ? getVisitedColor(visited) : ''}` }}
+          style={{ color: `${visited !== 0 ? getVisitColor(visited) : ''}` }}
           className={`subscribedCityUsers__displayName ${
             visited > 1 ? 'subscribedCityUsers__noPaddingLeft' : 'subscribedCityUsers__paddingLeft'
           }`}

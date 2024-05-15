@@ -1,56 +1,56 @@
-.util__circleContainer {
+.circlePopup__circleContainer {
   display: flex;
   gap: 10px;
   align-items: center;
 }
 
-.util__circleWithBorder {
+.circlePopup__circleWithBorder {
   width: 15px;
   height: 15px;
   border-radius: 50%;
 }
 
-.util__circleWithBorder > span {
+.circlePopup__circleWithBorder > span {
   padding-left: 20px;
 }
 
-.util__Grey {
-  border: solid #808080 3px;
+.circlePopup__grey {
+  border: solid #808080 2px;
   background: #80808044;
 }
 
-.util__Green {
-  border: solid #00d061 3px;
+.circlePopup__green {
+  border: solid #00d061 2px;
   background: #00d06144;
 }
 
-.util__Blue {
-  border: solid #0050ef 3px;
+.circlePopup__blue {
+  border: solid #0050ef 2px;
   background: #0050ef44;
 }
 
-.util__cityInfoName {
+.circlePopup__cityInfoName {
   font-size: 20px;
   font-weight: bold;
   color: #555;
 }
 
-.util__cityInfoContainer {
+.circlePopup__cityInfoContainer {
   width: 150px;
 }
 
-.util__cityInfoContainer > div {
+.circlePopup__cityInfoContainer > div {
   margin-top: 5px;
 }
 
-.util__dateInfo {
+.circlePopup__dateInfo {
   display: flex;
 }
-.util__dateInfo > strong {
+.circlePopup__dateInfo > strong {
   padding-right: 5px;
 }
 
-.pulsing-circle {
+.circlePopup__pulsingCircle {
   /* border-radius: 50%;
   width: 150px;
   height: 150px;

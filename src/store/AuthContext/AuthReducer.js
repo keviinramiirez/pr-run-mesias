@@ -1,6 +1,4 @@
-import { setLocalStorage, logoutStorage } from '../services/authService'
-
-import { verifyAndFetchGoogleUserData } from '../auth/auth'
+// import { verifyAndFetchGoogleUserData } from '../../services/authService'
 
 const types = {
   RESET: 'RESET',

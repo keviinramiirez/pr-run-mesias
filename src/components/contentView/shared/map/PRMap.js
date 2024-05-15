@@ -2,7 +2,7 @@ import React from 'react'
 import { MapContainer, TileLayer } from 'react-leaflet'
 import './PRMap.css'
 // import { showDataOnMap } from '../../utils/util'
-import MapCircles from '../../utils/MapCircles'
+import CirclePopup from './CirclePopup'
 
 function PRMap({ cities, modifiedCitiesMap, setModifiedCitiesMap }) {
   return (
@@ -19,7 +19,7 @@ function PRMap({ cities, modifiedCitiesMap, setModifiedCitiesMap }) {
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         />
         {/* {showDataOnMap(cities)} */}
-        <MapCircles
+        <CirclePopup
           cities={cities}
           // originalCities={originalCities}
           modifiedCitiesMap={modifiedCitiesMap}

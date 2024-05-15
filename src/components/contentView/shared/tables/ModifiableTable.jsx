@@ -1,9 +1,6 @@
-import { checkIsSubscribedCity, getCityVisitedColor } from '../../../../services/cityService'
-import { useAuthContext } from '../../../../store/AuthProvider'
-import { sortCitiesByName, sortCitiesByToVisit } from '../../../../utils/util'
+import { useAuthContext } from '../../../../store/AuthContext/AuthProvider'
 import './ModifiableTable.css'
 import ModifiableCityItem from './ModifiableCityItem'
-import { useState, useEffect } from 'react'
 
 const ModifiableTable = ({
   modifiableCities,

@@ -1,23 +1,10 @@
 import './App.css'
 import 'leaflet/dist/leaflet.css'
 import React, { useRef, useEffect, useState } from 'react'
-// import { db } from './auth/firebase'
-// import { Timestamp, deleteField, getDoc, updateDoc } from 'firebase/firestore'
-// import { collection, query, getDocs, setDoc, doc } from 'firebase/firestore'
-import AuthProvider from './store/AuthProvider'
-// import PRMap from './components/map/PRMap'
-// import ModifiableCities from './components/cities/ModifiableCities'
+import AuthProvider from './store/AuthContext/AuthProvider'
 import Header from './components/header/Header/Header'
-// import {
-//   citiesVisitValues,
-//   sortCitiesByName,
-//   sortCitiesByToVisit,
-//   sortToVisitCitiesByDateTime,
-// } from './utils/util'
-// import VisitedCitiesList from './components/cities/VisitedCitiesList'
-// import ToVisitCitiesList from './components/cities/ToVisitCitiesList'
 import ContentView from './components/contentView/ContentView'
-import { doSignOut } from './auth/auth'
+import { doSignOut } from './services/authService'
 
 function App() {
   const [authCardDimensions, setAuthCardDimensions] = useState({})

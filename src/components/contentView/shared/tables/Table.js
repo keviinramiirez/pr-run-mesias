@@ -1,12 +1,12 @@
 import React from 'react'
 import './Table.css'
 import { beautifyDate, get12HourFormatOfDate } from '../../../../services/dateServices'
-import { citiesVisitValues } from '../../../../utils/util'
+import { visitValuesMap } from '../../../../services/cityService'
 
-function Table({ cities, isScrollable = true, visitedValue = undefined }) {
+function Table({ cities, isScrollable = true, visitValue = undefined }) {
   return (
     <div className={`table ${isScrollable ? 'table__staticHeight' : ''}`}>
-      {visitedValue === citiesVisitValues.tovisit.visitedValue && (
+      {visitValue === visitValuesMap.tovisit && (
         <tr>
           <th></th>
           {/* <th>Día</th> */}
@@ -38,7 +38,7 @@ function Table({ cities, isScrollable = true, visitedValue = undefined }) {
       })} */}
       {cities?.map(({ name, lat, visited, date }) => {
         const key = name + lat
-        const bool = !visitedValue || visited === visitedValue
+        const bool = !visitValue || visited === visitValue
         return (
           bool && (
             <>

@@ -1,13 +1,14 @@
 import './ContentView.css'
-import { useAuthContext } from '../../store/AuthProvider'
+import { useAuthContext } from '../../store/AuthContext/AuthProvider'
 import { useEffect, useState } from 'react'
-import { db } from '../../auth/firebase'
+import { db } from '../../services/firebase'
 import { deleteField, updateDoc, collection, query, getDocs, setDoc, doc } from 'firebase/firestore'
-import { citiesVisitValues, sortCitiesByName, sortCitiesByToVisit } from '../../utils/util'
-import PRMap from '../map/PRMap'
+import { sortCitiesByName, sortCitiesByTovisit } from '../../services/cityService'
+import PRMap from './shared/map/PRMap'
 import ModifiableCitiesGuest from './guest/cities/ModifiableCitiesGuest'
 import ModifiableCitiesAdmin from './admin/cities/ModifiableCitiesAdmin'
 import SubscribedCityUsersList from './shared/cities/SubscribedCityUsersList'
+import { visitValuesMap } from '../../services/cityService'
 
 const ContentView = ({ onHideAuthCard }) => {
   const [cities, setCities] = useState([])
@@ -37,34 +38,23 @@ const ContentView = ({ onHideAuthCard }) => {
         const cityData = doc.data()
         cityData.id = id++
         fetchedCities.push(cityData)
-        if (cityData.visited === citiesVisitValues.visited.visitedValue) {
+        if (cityData.visited === visitValuesMap.visited) {
           visitedCities.push(cityData)
           visitedSet.add(cityData.name)
         }
-        if (cityData.visited === citiesVisitValues.tovisit.visitedValue) {
+        if (cityData.visited === visitValuesMap.tovisit) {
           tovisitCities.push(cityData)
         }
         // if (cityData.subscribeCities?.length > 0)
         //   console.log('subscribeCities', cityData.subscribeCities)
       })
-      fetchedCities = sortCitiesByToVisit(fetchedCities)
+      fetchedCities = sortCitiesByTovisit(fetchedCities)
       // const citiesClone = [...fetchedCities]
       // console.log('fetchedCities', fetchedCities)
       setCities(fetchedCities)
       setVisitedCities(visitedCities)
       setVisitedCitiesSet(visitedSet)
 
-      // const subscribedTovisitSet = new Set()
-      // currentUser?.subscribedCities.forEach(city => {
-      //   const tovisitCity = fetchedCities.find(fc => city.name === fc.name && fc.visited === 2)
-      //   if (tovisitCity) {
-      //     subscribedTovisitSet.add(tovisitCity)
-      //     console.log(tovisitCity.name, 'subscribedTovisitCities', subscribedTovisitSet)
-      //   }
-      //   // console.log('---', subcribedTovisitCity)
-      // })
-      // // console.log('subscribedTovisitSet', subscribedTovisitSet)
-      // setSubscribedTovisitSet(subscribedTovisitSet)
       setSubscribedTovisitSet(getSubscribedTovisitCities(fetchedCities))
     }
 
@@ -73,13 +63,14 @@ const ContentView = ({ onHideAuthCard }) => {
 
   useEffect(() => {
     if (currentUser) {
-      console.log('currentUser.subscribedCities updated')
+      console.log('\ncurrentUser.subscribedCities updated', cities)
       setSubscribedTovisitSet(getSubscribedTovisitCities(cities))
     }
   }, [currentUser?.subscribedCities])
 
   const getSubscribedTovisitCities = cityArr => {
     const subscribedTovisitSet = new Set()
+    console.log('-currentUser?.subscribedCities', currentUser?.subscribedCities)
     currentUser?.subscribedCities.forEach(city => {
       const tovisitCity = cityArr.find(fc => city.name === fc.name && fc.visited === 2)
       if (tovisitCity) {
@@ -136,7 +127,7 @@ const ContentView = ({ onHideAuthCard }) => {
     setDoc(doc(db, 'cities', modifiedCity.name), modifiedCity).then(() => {
       // console.log('c', modifiedCity)
       const visitedCitiesClone = [...visitedCities]
-      if (modifiedCity.visited === citiesVisitValues.visited.visitedValue) {
+      if (modifiedCity.visited === visitValuesMap.visited) {
         visitedCitiesClone.push(modifiedCity)
         // visitedSet.add(city)
       } else {
@@ -174,7 +165,7 @@ const ContentView = ({ onHideAuthCard }) => {
     } else if (modifiedCityData.prevVisitedValue === selectedVisitedValue)
       modifiedMapClone.delete(city.name)
 
-    if (selectedVisitedValue === citiesVisitValues.visited.visitedValue) {
+    if (selectedVisitedValue === visitValuesMap.visited) {
       visitedSet.add(city.name)
     } else {
       visitedSet.delete(city.name)
@@ -187,7 +178,7 @@ const ContentView = ({ onHideAuthCard }) => {
     // if (!modifiedCityData) {
     //   modifiedMapClone.set(city.name, { prevVisitedValue: city.visited, city })
     //   modifiedMapClone.get(city.name).city.visited = selectedVisitedValue
-    //   // if (selectedVisitedValue === citiesVisitValues.notVisited.visitedValue) {
+    //   // if (selectedVisitedValue === visitValuesMap.notVisited) {
     //   //   setNModifiedVisitedCities(nModifiedVisitedCities - 1)
     //   // }
     // } else if (modifiedCityData.prevVisitedValue === selectedVisitedValue) {
@@ -195,13 +186,13 @@ const ContentView = ({ onHideAuthCard }) => {
     //   setNModifiedVisitedCities(nModifiedVisitedCities - 1)
     // }
 
-    // if (selectedVisitedValue === citiesVisitValues.visited.visitedValue) {
+    // if (selectedVisitedValue === visitValuesMap.visited) {
     //   visitedSet.add(city.name)
     //   setNModifiedVisitedCities(nModifiedVisitedCities + 1)
     // }
     // else {
     //   visitedSet.delete(city.name)
-    //   if (selectedVisitedValue === citiesVisitValues.notVisited.visitedValue)
+    //   if (selectedVisitedValue === visitValuesMap.notvisited)
     //     setNModifiedVisitedCities(nModifiedVisitedCities - 1)
     // }
 
@@ -217,17 +208,17 @@ const ContentView = ({ onHideAuthCard }) => {
     //    but that's why we made a copy first
     citiesClone[toModifyIndex] = cityToModify
     // 5. Set the state to our new copy
-    setCities(sortCitiesByToVisit(sortCitiesByName(citiesClone)))
+    setCities(sortCitiesByTovisit(sortCitiesByName(citiesClone)))
   }
 
   const handleSubscription = (city, isSubscribed) => {
-    console.log('handleSubscription -> isSubscribed ', isSubscribed)
+    // console.log('handleSubscription -> isSubscribed ', isSubscribed)
     dispatchUserCitySubscription(city, isSubscribed).then(() => {
-      if (isSubscribed) {
-        subscribedTovisitSet.delete(city)
-      } else {
-        subscribedTovisitSet.add(city)
-      }
+      // if (isSubscribed) {
+      //   subscribedTovisitSet.delete(city)
+      // } else {
+      //   subscribedTovisitSet.add(city)
+      // }
     })
   }
 

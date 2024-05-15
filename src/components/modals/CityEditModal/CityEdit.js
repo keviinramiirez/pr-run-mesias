@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react'
 import './CityEdit.css'
-import { db } from '../../../auth/firebase'
-import { collection, query, getDocs, setDoc, doc, getDoc, Timestamp } from 'firebase/firestore'
+import { db } from '../../../services/firebase'
+import { doc, getDoc, Timestamp } from 'firebase/firestore'
 import classes from './CityEditModal.module.css'
 import Modal from '../Modal'
-import { visitedValues } from '../../../utils/util'
+// import { visitedValues } from '../../../utils/util'
 import { Button, Checkbox, FormControl, MenuItem, Select, TextField } from '@material-ui/core'
-import Circle from '../../map/Circle'
+import Circle from '../../contentView/shared/map/Circle'
 import {
   beautifyDate,
   beautifyDateHour,
@@ -16,6 +16,7 @@ import {
   toJSDate,
 } from '../../../services/dateServices'
 import SubscribedUsers from './SubscribedUsers'
+import { isTovisitValue, visitLabels, visitValuesMap } from '../../../services/cityService'
 
 const portalElement = document.getElementById('city-edit-portal')
 
@@ -156,12 +157,12 @@ const CityEdit = ({ city, onCityChange, onSaveChanges, onCloseCityEdit }) => {
                   onChange={handleVisitedChange}
                   value={selectedCityVisitValue}
                 >
-                  {visitedValues.map((_, i) => {
+                  {visitLabels.map((_, i) => {
                     // console.log('bruh', visitedValue)
                     return (
                       <MenuItem key={i} value={i}>
                         <Circle visited={i} />
-                        <span>{visitedValues[i]}</span>
+                        <span>{visitLabels[i]}</span>
                       </MenuItem>
                     )
                   })}
@@ -227,10 +228,12 @@ const CityEdit = ({ city, onCityChange, onSaveChanges, onCloseCityEdit }) => {
               </div>
             )}
           </div>
-          <div className='cityEdit__right'>
-            <h5>Suscritos</h5>
-            <SubscribedUsers city={city} />
-          </div>
+          {isTovisitValue() && (
+            <div className='cityEdit__right'>
+              <h5>Suscritos</h5>
+              <SubscribedUsers city={city} />
+            </div>
+          )}
         </div>
         <Button
           style={{ marginTop: '20px' }}

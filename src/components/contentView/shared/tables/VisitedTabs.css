@@ -1,0 +1,54 @@
+.VisitedTabs {
+  /* position: absolute; */
+  width: 100%;
+  max-width: 400px;
+  height: 40px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  cursor: pointer;
+  padding-bottom: 1px;
+  box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14),
+    0px 1px 3px 0px rgba(0, 0, 0, 0.12) !important;
+}
+
+.VisitedTabs__tab {
+  display: grid;
+  align-items: center;
+  text-align: center;
+  width: 50%;
+  height: 100%;
+  background-color: #fafafa;
+  /* grid-template-columns: 1fr 2fr; */
+}
+
+/* .VisitedTabs__tab {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  width: 50%;
+  height: 100%;
+  background-color: #fafafa;
+} */
+
+.VisitedTabs__tab > .circle {
+  position: absolute;
+  /* margin-top: -26px; */
+  /* top: 0;
+  left: 0; */
+  /* margin-left: 9px; */
+  /* margin-top: -1px; */
+  /* position: relative;
+  top: 12px;
+  left: 8px; */
+  /* width: 40%;
+  align-items: center; */
+}
+
+.VisitedTabs__tab > h6 {
+  font-size: 1em !important;
+}
+
+.VisitedTabs__tab > .MuiTypography-caption.marginLeft {
+  margin-left: 12px !important;
+}

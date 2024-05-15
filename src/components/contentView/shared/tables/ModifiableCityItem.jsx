@@ -1,6 +1,6 @@
 import './ModifiableCityItem.css'
 import { beautifyDate, get12HourFormatOfDate } from '../../../../services/dateServices'
-import Circle from '../../../map/Circle'
+import Circle from '../map/Circle'
 import { Button } from '@material-ui/core'
 // import { useAuthContext } from '../../../../store/AuthProvider'
 // import { useState, useEffect } from 'react'

@@ -1,23 +1,57 @@
-import { db } from '../auth/firebase'
-import {
-  deleteField,
-  updateDoc,
-  collection,
-  query,
-  getDocs,
-  getDoc,
-  setDoc,
-  doc,
-  where,
-} from 'firebase/firestore'
-import { citiesVisitValues, sortCitiesByName, sortCitiesByToVisit } from '../utils/util'
+import { toJSDate } from './dateServices'
+import { db } from './firebase'
+import { collection, query, getDocs, setDoc, doc } from 'firebase/firestore'
 
-export const getVisitedColor = visitedValue => {
+export const sortCitiesByName = cities => {
+  const sortedData = [...cities]
+  sortedData.sort((a, b) => (a.name > b.name ? 1 : -1))
+  return sortedData
+}
+
+export const sortCitiesByTovisit = cities => {
+  const sortedData = [...cities]
+  sortedData.sort((a, b) => (a.visited < b.visited ? 1 : -1))
+  return sortedData
+}
+
+export const sortTovisitCitiesByDateTime = cities => {
+  const sortedByDateThenTime = [...cities]
+  // console.log('cities', cities, sortedByDateThenTime)
+  sortedByDateThenTime.sort((a, b) => toJSDate(a.date) - toJSDate(b.date))
+  // sortedByDateThenTime.sort(
+  //   (a, b) => a.createdAt.toMillis() - b.createdAt.toMillis()
+  // )
+  // a.createdAt.toMillis() - b.createdAt.toMillis()
+  return sortedByDateThenTime
+}
+
+export const visitValuesMap = {
+  tovisit: 2,
+  visited: 1,
+  notvisited: 0,
+}
+
+export const isTovisitValue = visitValue => visitValue === visitValuesMap.tovisit
+export const isVisitedValue = visitValue => visitValue === visitValuesMap.visited
+export const isNotvisitedValue = visitValue => visitValue === visitValuesMap.notvisited
+
+export const getVisitColor = visitedValue => {
   let color = '#808080' //grey
-  if (visitedValue === citiesVisitValues.tovisit.visitedValue) color = '#0050ef' // blue
-  else if (visitedValue === citiesVisitValues.visited.visitedValue) color = '#01823d' // green
+  if (isTovisitValue(visitedValue)) color = '#0050ef' // blue
+  else if (isVisitedValue(visitedValue)) color = '#01823d' // green
   return color
 }
+export const visitLabels = ['Aún por visitar', 'Ya lo corrimos', 'Próxima corrida']
+
+export const getVisitLabel = visitedValue => {
+  let label = visitLabels[0]
+  if (isVisitedValue(visitedValue)) label = visitLabels[1]
+  if (isTovisitValue(visitedValue)) label = visitLabels[2]
+  return label
+}
+
+export const checkIsSubscribedCity = (user, city) =>
+  user?.subscribedCities.some(c => c.name === city.name)
 
 // export const getSubscribedTovisitCitiesOf = user => {
 //   const subscribedTovisitCities = []
@@ -47,9 +81,6 @@ export const fetchSubscribedUsersOf = async city => {
   return subscribedUsers
 }
 
-export const checkIsSubscribedCity = (user, city) =>
-  user?.subscribedCities.some(c => c.name === city.name)
-
 export const subscribeUserCity = async (user, city) => {
   const { subscribedCities } = user
   let subscribedCitiesClone = [...subscribedCities]
@@ -57,9 +88,9 @@ export const subscribeUserCity = async (user, city) => {
   // user.subscribedCities = subscribedCitiesClone
   const newUser = {
     ...user,
-    subscribedCities: sortCitiesByToVisit(sortCitiesByName(subscribedCitiesClone)),
+    subscribedCities: sortCitiesByTovisit(sortCitiesByName(subscribedCitiesClone)),
   }
-  console.log('newUser', newUser)
+  // console.log('newUser', newUser)
   await setDoc(doc(db, 'users', user.email), newUser)
   return newUser
 }
@@ -68,7 +99,7 @@ export const unsubscribeUserCity = async (user, city) => {
   const { subscribedCities } = user
   let subscribedCitiesClone = [...subscribedCities]
   const toModifyIndex = subscribedCitiesClone.findIndex(c => c.name === city.name)
-  console.log('---toModifyIndex', toModifyIndex)
+  // console.log('---toModifyIndex', toModifyIndex)
   subscribedCitiesClone.splice(toModifyIndex, 1)
   // let cityToModify = { ...subscribedCities[toModifyIndex] }
 
@@ -76,7 +107,7 @@ export const unsubscribeUserCity = async (user, city) => {
   // let cityToModify = { ...cities[toModifyIndex] }
   // cityToModify.visited = selectedVisitedValue
   // citiesClone[toModifyIndex] = cityToModify
-  console.log('subscribedCitiesClone', subscribedCitiesClone)
+  // console.log('subscribedCitiesClone', subscribedCitiesClone)
   const newUser = {
     ...user,
     subscribedCities: subscribedCitiesClone,
