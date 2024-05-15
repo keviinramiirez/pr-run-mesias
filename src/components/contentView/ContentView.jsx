@@ -49,26 +49,48 @@ const ContentView = ({ onHideAuthCard }) => {
       })
       fetchedCities = sortCitiesByToVisit(fetchedCities)
       // const citiesClone = [...fetchedCities]
-      console.log('fetchedCities', fetchedCities)
+      // console.log('fetchedCities', fetchedCities)
       setCities(fetchedCities)
       setVisitedCities(visitedCities)
       setVisitedCitiesSet(visitedSet)
 
-      const subscribedTovisitSet = new Set()
-      currentUser?.subscribedCities.forEach(city => {
-        const tovisitCity = fetchedCities.find(fc => city.name === fc.name && fc.visited === 2)
-        if (tovisitCity) {
-          subscribedTovisitSet.add(tovisitCity)
-          console.log(tovisitCity.name, 'subscribedTovisitCities', subscribedTovisitSet)
-        }
-        // console.log('---', subcribedTovisitCity)
-      })
-      // console.log('subscribedTovisitSet', subscribedTovisitSet)
-      setSubscribedTovisitSet(subscribedTovisitSet)
+      // const subscribedTovisitSet = new Set()
+      // currentUser?.subscribedCities.forEach(city => {
+      //   const tovisitCity = fetchedCities.find(fc => city.name === fc.name && fc.visited === 2)
+      //   if (tovisitCity) {
+      //     subscribedTovisitSet.add(tovisitCity)
+      //     console.log(tovisitCity.name, 'subscribedTovisitCities', subscribedTovisitSet)
+      //   }
+      //   // console.log('---', subcribedTovisitCity)
+      // })
+      // // console.log('subscribedTovisitSet', subscribedTovisitSet)
+      // setSubscribedTovisitSet(subscribedTovisitSet)
+      setSubscribedTovisitSet(getSubscribedTovisitCities(fetchedCities))
     }
 
     fetchCities()
   }, [])
+
+  useEffect(() => {
+    if (currentUser) {
+      console.log('currentUser.subscribedCities updated')
+      setSubscribedTovisitSet(getSubscribedTovisitCities(cities))
+    }
+  }, [currentUser?.subscribedCities])
+
+  const getSubscribedTovisitCities = cityArr => {
+    const subscribedTovisitSet = new Set()
+    currentUser?.subscribedCities.forEach(city => {
+      const tovisitCity = cityArr.find(fc => city.name === fc.name && fc.visited === 2)
+      if (tovisitCity) {
+        subscribedTovisitSet.add(tovisitCity)
+        console.log(tovisitCity.name, 'subscribedTovisitCities', subscribedTovisitSet)
+      }
+      // console.log('---', subcribedTovisitCity)
+    })
+    // console.log('subscribedTovisitSet', subscribedTovisitSet)
+    return subscribedTovisitSet
+  }
 
   const handleHideAuthCard = setIsLoggedIn => {
     onHideAuthCard(setIsLoggedIn, isLoggedIn)

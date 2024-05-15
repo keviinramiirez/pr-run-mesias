@@ -53,7 +53,7 @@ const AuthProvider = ({ children }) => {
       // const currentUser = user
       // currentUser.accessToken = token;
       await verifyAndFetchGoogleUserData(user).then(userData => {
-        // console.log('userData', userData)
+        console.log('userData', userData)
         dispatchAuthAction({ type: 'INIT_GOOGLE_USER', payload: { user: userData } })
 
         // currentUser = userData
@@ -84,13 +84,13 @@ const AuthProvider = ({ children }) => {
     //   c => c.name === city.name
     // )
     if (isSubscribed) {
-      console.log('unsubscribing...')
+      console.log('unsubscribing to ', city.name)
       await unsubscribeUserCity(authState.currentUser, city)
         .then(user => dispatchAuthAction({ type: 'SUBSCRIPTION_USER_CITY', payload: { user } }))
         .catch(err => console.log('err', err))
     } else {
       await subscribeUserCity(authState.currentUser, city).then(user => {
-        console.log('subscribing...')
+        console.log('subscribing to ', city.name)
         dispatchAuthAction({ type: 'SUBSCRIPTION_USER_CITY', payload: { user } })
       })
     }

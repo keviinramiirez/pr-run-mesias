@@ -6,9 +6,6 @@
   max-height: 200px !important;
   /* width: 100% !important; */
 }
-.subscribedUsers > p {
-  margin-top: 1em;
-}
 
 .subscribedUsers > tr {
   height: 30px !important;
@@ -23,6 +20,7 @@
 
 .subscribedUsers > tr > td > p {
   /* width: 100% !important; */
+  font-size: 0.85em;
 }
 
 .subscribedUsers > tr:nth-of-type(odd) {

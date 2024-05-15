@@ -36,12 +36,12 @@ const Login = ({ onHideAuthCard }) => {
   //   }
   // }
 
-  const onGoogleLogin = (e) => {
+  const onGoogleLogin = e => {
     e.preventDefault()
     if (!isLoggedIn) {
       // fetchSignInWithGoogle(onHideAuthCard)
       doSignInWithGoogle()
-        .then((result) => {
+        .then(result => {
           // This gives you a Google Access Token. You can use it to access the Google API.
           const credential = GoogleAuthProvider.credentialFromResult(result)
           const token = credential.accessToken
@@ -52,7 +52,7 @@ const Login = ({ onHideAuthCard }) => {
           onHideAuthCard()
           // IdP data available using getAdditionalUserInfo(result)
         })
-        .catch((err) => {
+        .catch(err => {
           // setIsLoggedIn(false)
           dispatchSigninWithGoogle(null, null)
 
@@ -63,7 +63,7 @@ const Login = ({ onHideAuthCard }) => {
           const email = err.customData.email
           // The AuthCredential type that was used.
           const credential = GoogleAuthProvider.credentialFromError(err)
-          console.log('error signin in with Google', credential)
+          // console.log('error signin in with Google', credential)
         })
     }
   }
@@ -128,7 +128,7 @@ const Login = ({ onHideAuthCard }) => {
       </div> */}
       <button
         disabled={isLoggedIn}
-        onClick={(e) => {
+        onClick={e => {
           onGoogleLogin(e)
         }}
         className={`login__googleButton ${isLoggedIn ? 'cursor-not-allowed' : ''}`}

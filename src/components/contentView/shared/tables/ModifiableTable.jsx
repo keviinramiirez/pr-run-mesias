@@ -20,7 +20,7 @@ const ModifiableTable = ({
   // )
 
   // Context API
-  const { authState, dispatchUserCitySubscription } = useAuthContext()
+  const { authState } = useAuthContext()
   const { currentUser } = authState
   // const handleSubscription = () => {
   //   dispatchUserCitySubscription(city)
@@ -41,9 +41,9 @@ const ModifiableTable = ({
   return (
     <>
       {currentUser?.type === 'admin' && (
-        <h3>
+        <h4>
           Ya corrimos en <span style={{ color: '#00a04b' }}>{visitedAmount}</span> ciudades
-        </h3>
+        </h4>
       )}
       {currentUser?.type === 'guest' && (
         <h4>
@@ -53,6 +53,7 @@ const ModifiableTable = ({
       <div className={`modifiableTable ${isScrollable ? 'modifiableTable__staticHeight' : ''}`}>
         {modifiableCities?.map(city => (
           <ModifiableCityItem
+            key={city.name}
             userType={currentUser?.type}
             city={city}
             isSubscribedCity={isSubscribedCity(city)}
