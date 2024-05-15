@@ -35,7 +35,7 @@ const ModifiableTable = ({
   // }
 
   const isSubscribedCity = city => {
-    return subscribedTovisitSet.has(city)
+    return subscribedTovisitSet?.has(city)
   }
 
   return (
